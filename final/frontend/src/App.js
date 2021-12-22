@@ -1,9 +1,11 @@
 import { Layout, Menu } from 'antd';
+import { Card } from 'antd'
 import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import "./App.css"
 import { useState} from 'react';
 
 const { Header, Content, Sider } = Layout;
+const { Meta } = Card
 
 function App() {
 
@@ -31,13 +33,12 @@ function App() {
           </Menu>
         </Sider>
         <Layout className="site-layout">
-          <Header className="site-layout-background" style={{ padding: 0 }}
-          title="Welcome to Board Game World!"
-          >
+          <Header className="site-layout-background" style={{ padding: 0 }}>
             {collapsed 
-            ? <MenuUnfoldOutlined className = 'trigger' onClick = {toggle} />
-            : <MenuFoldOutlined className = 'trigger' onClick = {toggle} />
+            ? <MenuUnfoldOutlined className = 'trigger' onClick = {toggle} style={{ padding: 10 }}/>
+            : <MenuFoldOutlined className = 'trigger' onClick = {toggle} style={{ padding: 10 }}/>
             }
+            <div className = 'title'> Welcome To Board Game World! </div>
           </Header>
           <Content
             className="site-layout-background"
@@ -47,7 +48,13 @@ function App() {
               minHeight: 400,
             }}
           >
-            Content
+            <Card
+            hoverable
+            style={{ width: 240 }}
+            cover={<img alt="example" src="https://m.media-amazon.com/images/I/81fEiLrmZ8L._AC_SL1500_.jpg" />}
+            >
+              <Meta title="Connect 4" description="Easy and fun. Recommended to beginners. " />
+            </Card>,
           </Content>
         </Layout>
       </Layout>

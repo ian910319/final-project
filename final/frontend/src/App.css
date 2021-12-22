@@ -6,6 +6,19 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
+.title {
+  display: inline;
+  align-self: center;
+  font-size: 30px;
+  font-family: monospace;
+  position: absolute;
+  color:#3056ff
+}
+
+.trigger{
+  font-size: 20px;
+  color:#A830FF
+}
 #components-layout-demo-custom-trigger .trigger {
   padding: 0 24px;
   font-size: 18px;
@@ -26,5 +39,5 @@
 
 .site-layout .site-layout-background {
   background: #fff;
+  position: relative; 
 }
-  
