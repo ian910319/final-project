@@ -1,0 +1,33 @@
+.gameCell {
+    height: 70px;
+    width: 70px;
+    background-color: #1990ff;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    border: 1px solid rgb(255, 255, 255); 
+}
+
+.whiteCircle,
+.redCircle,
+.yellowCircle {
+    top:5%;
+    position:relative;
+    height: 60px;
+    width: 60px;
+    border-radius: 100px;
+}
+
+.whiteCircle {
+    background-color: #fff;
+}
+
+.redCircle {
+    background-color: rgb(251, 42, 42);
+    transition: background-color 0.5s;
+}
+
+.yellowCircle {
+    background-color: rgb(243, 239, 20);
+    transition: background-color 0.5s;
+}
