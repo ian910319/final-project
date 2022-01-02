@@ -25,7 +25,14 @@ const ConnectFour = (props) => {
             
             </Header>
             <Content>
-                <Board board={board} setBoard={setBoard}></Board>
+                <div style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <h1> Player 1: {props.me}</h1>
+                    <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
+                        <h1> Player 1's turn </h1>
+                        <Board board={board} setBoard={setBoard}></Board>
+                    </div>
+                    <h1> Player 2: </h1>
+                </div>
             </Content>
             <Footer>
             Instruction <br></br>

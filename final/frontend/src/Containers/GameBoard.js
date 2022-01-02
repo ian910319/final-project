@@ -4,7 +4,7 @@ import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFold
 
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card
-const GameBoard = ({collapsed, toggle, setIsConnectFour}) =>{
+const GameBoard = ({me, collapsed, toggle, setIsConnectFour}) =>{
     return (
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -28,7 +28,7 @@ const GameBoard = ({collapsed, toggle, setIsConnectFour}) =>{
                 ? <MenuUnfoldOutlined className = 'trigger' onClick = {toggle} style={{ padding: 10 }}/>
                 : <MenuFoldOutlined className = 'trigger' onClick = {toggle} style={{ padding: 10 }}/>
                 }
-                <div className = 'title'> Welcome To Board Game World! </div>
+                <div className = 'title'> {me}, Welcome To Board Game World! </div>
               </Header>
               <Content
                 className="site-layout-background"

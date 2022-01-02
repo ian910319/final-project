@@ -1,5 +1,6 @@
 import "./App.css"
 import { useState } from 'react';
+import SignIn from "./Containers/SignIn";
 import GameBoard from './Containers/GameBoard'
 import ConnectFour from "./Containers/ConnectFour";
 
@@ -7,6 +8,8 @@ function App() {
 
   const [collapsed, setCollapsed] = useState(false)
   const [isConnectFour, setIsConnectFour] = useState(false)
+  const [signedIn, setSignedIn] = useState(false)
+  const [me, setMe] = useState('')
   // const [isSixNimmt, setIsSixNimmt] = useState(false)
 
   const toggle = () => {
@@ -16,18 +19,24 @@ function App() {
 
   return (
     <>
-    {isConnectFour ? 
-    <ConnectFour
+    {
+    !signedIn
+    ? <SignIn
+      me = {me}
+      setMe = {setMe}
+      setSignedIn = {setSignedIn}
+    />
+    : isConnectFour
+    ? <ConnectFour
     setIsConnectFour = {setIsConnectFour}
-    >
-    </ConnectFour>
-    :
-    <GameBoard
+    me = {me}
+    />
+    : <GameBoard
       collapsed = {collapsed}
       setIsConnectFour = {setIsConnectFour}
       toggle = {toggle}
-    >
-    </GameBoard>
+      me = {me}
+    />
     }
     </>
   );
