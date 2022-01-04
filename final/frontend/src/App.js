@@ -12,6 +12,7 @@ function App() {
   const [signedIn, setSignedIn] = useState(false)
   const [me, setMe] = useState('')
   const [isSixNimmt, setIsSixNimmt] = useState(false)
+  const [photoURL, setPhotoURL] = useState('')
 
   const toggle = () => {
     const now = !collapsed
@@ -26,11 +27,12 @@ function App() {
       me = {me}
       setMe = {setMe}
       setSignedIn = {setSignedIn}
+      setPhotoURL = {setPhotoURL}
     />
     : isConnectFour
     ? <ConnectFour
-    setIsConnectFour = {setIsConnectFour}
-    me = {me}
+      setIsConnectFour = {setIsConnectFour}
+      me = {me}
     />
     : isSixNimmt
     ? <SixNimmt 
@@ -42,6 +44,8 @@ function App() {
       setIsSixNimmt = {setIsSixNimmt}
       toggle = {toggle}
       me = {me}
+      photoURL = {photoURL}
+      setPhotoURL = {setPhotoURL}
     />
     
     }

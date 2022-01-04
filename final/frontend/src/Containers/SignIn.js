@@ -1,6 +1,7 @@
 import { Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import styled from "styled-components"
+import axios from '../api'; 
 
 const Title = styled.div`
     display: flex;
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
   width: 800px;
   margin: auto;
 `
-const SignIn = ({ me, setMe, setSignedIn, displayStatus }) => (
+const SignIn = ({ me, setMe, setSignedIn, setPhotoURL }) => (
   <Wrapper>
     <Title>
       <h1>The Entrance of Board Game World...</h1>
@@ -33,15 +34,15 @@ const SignIn = ({ me, setMe, setSignedIn, displayStatus }) => (
       onChange={(e) => setMe(e.target.value)}
       placeholder="Enter your name"
       size="large" style={{ width: 300, margin: 50}}
-      onSearch={() => {
-        /*
-        if (!name)
-          displayStatus({
-            type: "error",
-            msg: "Missing user name",
-          });
-        else */ 
-            setSignedIn(true);
+      onSearch={async() => {
+        setSignedIn(true);
+        const {
+          data: { URL },
+        } = await axios.post('/api/create-user', {
+          me
+        });
+        console.log(URL)
+        setPhotoURL(URL)
       }}
     />
   </Wrapper>

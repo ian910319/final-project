@@ -2,12 +2,13 @@ import { Button, Layout, Menu } from 'antd';
 import { Card, Row, Col, Image, Modal, Input} from 'antd'
 import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useState } from 'react';
+import axios from '../api'; 
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card
 
-const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt}) =>{
-    const[photoURL, setPhotoURL] = useState('error')
-    const[temp, setTemp] = useState('error')  // used to record old photo
+const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
+                    photoURL, setPhotoURL}) =>{
+    const[temp, setTemp] = useState('')  // used to record old photo
     const[photoModal, setPhotoModal] = useState(false)
 
     return (
@@ -16,22 +17,28 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt}) =>{
     
               <div className="logo">
                 <Image
-                  width={100}
                   height={100}
                   src={photoURL}
                 />
                 <Button
                   onClick={()=>{
                     setPhotoModal(true)
-                    setTemp(photoURL)
+                    setTemp('')
                   }}
                 >
                   Change Your Photo Sticker
                 </Button>
                 <Modal
                 visible = {photoModal}
-                onOk={()=>{
-                  setPhotoURL(temp)
+                onOk={async()=>{
+                  const {
+                    data: { URL },
+                  } = await axios.post('/api/create-photo', {
+                    me,
+                    newPhoto: temp
+                  });
+                  console.log(URL)
+                  setPhotoURL(URL)
                   setPhotoModal(false)
                 }}
                 onCancel={()=>{
@@ -43,6 +50,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt}) =>{
                     <h2>Choose Your Favorite Picture Online!</h2>
                     <Input
                         placeholder="Enter Picture's URL"
+                        value = {temp}
                         onChange={(e) => setTemp(e.target.value)}
                     />
                 </Modal>
