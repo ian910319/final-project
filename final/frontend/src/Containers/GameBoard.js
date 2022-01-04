@@ -1,15 +1,52 @@
-import { Layout, Menu } from 'antd';
-import { Card, Row, Col} from 'antd'
+import { Button, Layout, Menu } from 'antd';
+import { Card, Row, Col, Image, Modal, Input} from 'antd'
 import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
-
+import { useState } from 'react';
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card
+
 const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt}) =>{
+    const[photoURL, setPhotoURL] = useState('error')
+    const[temp, setTemp] = useState('error')  // used to record old photo
+    const[photoModal, setPhotoModal] = useState(false)
+
     return (
         <Layout>
             <Sider trigger={null} collapsible collapsed={collapsed}>
     
-              <div className="logo" />
+              <div className="logo">
+                <Image
+                  width={100}
+                  height={100}
+                  src={photoURL}
+                />
+                <Button
+                  onClick={()=>{
+                    setPhotoModal(true)
+                    setTemp(photoURL)
+                  }}
+                >
+                  Change Your Photo Sticker
+                </Button>
+                <Modal
+                visible = {photoModal}
+                onOk={()=>{
+                  setPhotoURL(temp)
+                  setPhotoModal(false)
+                }}
+                onCancel={()=>{
+                  setPhotoModal(false)
+                }}
+                okText="Create"
+                cancelText="Cancel"   
+                >   
+                    <h2>Choose Your Favorite Picture Online!</h2>
+                    <Input
+                        placeholder="Enter Picture's URL"
+                        onChange={(e) => setTemp(e.target.value)}
+                    />
+                </Modal>
+              </div>
               <Menu theme="dark" mode="inline">
                 <Menu.Item key="1" icon={<UserOutlined />}>
                   Personal Profile
