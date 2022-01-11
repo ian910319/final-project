@@ -4,7 +4,7 @@ import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFold
 import { useState } from 'react';
 import axios from '../api'; 
 const { Header, Content, Sider } = Layout;
-const { Meta } = Card
+const { Meta } = Card 
 
 const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     photoURL, setPhotoURL}) =>{
