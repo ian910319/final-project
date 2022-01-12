@@ -1,5 +1,5 @@
 import express from 'express'
-import User from '../models/User'
+import { User } from '../Model'
 import mongoose from 'mongoose';
 
 const router = express.Router()
@@ -22,7 +22,6 @@ const saveUser = async (name) => {
     else{
       try {
         const newUser = new User({ name, pictureURL: "error" });
-        console.log("hi")
         photoURL = newUser.pictureURL
         return newUser.save();
       } catch (e) { throw new Error("User creation error: " + e); }
@@ -34,7 +33,7 @@ router.post('/create-user', async(req, res) => {
       await saveUser(req.body.me)
       res.send({URL: photoURL})
     } catch(e) {res.status(404)}
-})
+}) 
 
 const savePhoto = async (name, picture) => {
     const existing = await User.findOne({ name });
@@ -56,3 +55,4 @@ router.post('/create-photo', async(req, res) => {
 })
 
 export default router
+

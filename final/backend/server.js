@@ -1,7 +1,11 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import router from './routes/route'
+import router from './routes/router'
 import cors from 'cors'
+import http from 'http'
+import WebSocket from 'ws'
+import {User, ConnectFour} from './Model'
+import {sendData, sendStatus} from './wssConnect'
 
 require('dotenv').config()
 mongoose
@@ -19,3 +23,90 @@ const port = process.env.PORT || 5000;
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
+
+const server = http.createServer();
+server.listen(4000, () => console.log("Listening.. on 4000"))
+
+const wss = new WebSocket.Server({
+  server
+});
+
+///////////////////////////////////////////////////////////////////
+/////////////// THIS IS FOR CONNECTFOUR ///////////////////////////
+const broadcastPlayer = (data) => {
+  wss.clients.forEach((client) => {
+    sendData(data, client);
+  });
+};
+
+const broadcastStatus = (status) => {
+  wss.clients.forEach((client) => {
+    sendStatus(status, client);
+  });
+};
+///////////////////////////////////////////////////////////////////
+
+wss.on('connection', (ws) => {
+  ws.onmessage = async (byteString) => {
+    const { data } = byteString
+    const [task, payload] = JSON.parse(data)
+    switch (task) {
+      case 'ConnectFour': {
+        const { roomId, player } = payload
+        const existing = await ConnectFour.findOne({ roomId });
+        if (existing){ 
+          if(existing.player1){
+            if(existing.player2){
+              broadcastStatus({
+                type: 'Full',
+                msg: 'The room is full.'
+              })
+              //console.log("full")
+            }
+            else{
+              existing.player2 = await User.findOne({ name: player });
+              const newPayload = {roomId: roomId, name: player, pictureURL: existing.player2.pictureURL}
+              broadcastPlayer(['Enter',[newPayload]])
+              broadcastStatus({
+                type: 'Success',
+                msg: `${player} entered the room ${roomId}`
+              })
+              //console.log("player2")
+              console.log(newPayload)
+              return existing.save();
+            }
+          }
+          else{
+            existing.player1 = await User.findOne({ name: player });
+            const newPayload = {roomId: roomId, name: player, pictureURL: existing.player1.pictureURL}
+            broadcastPlayer(['Enter',[newPayload]])
+            broadcastStatus({
+              type: 'Success',
+              msg: `${player} entered the room ${roomId}`
+            })
+            //console.log("player1")
+            console.log(newPayload)
+            return existing.save();
+          }
+        }
+        else{
+          try {
+            const newplayer = await User.findOne({ name: player });
+            const newConnectFour = new ConnectFour({ roomId, player1: newplayer});
+            const newPayload = {roomId: roomId, name: player, pictureURL: newplayer.pictureURL}
+            broadcastPlayer(['Enter',[newPayload]])
+            broadcastStatus({
+              type: 'Success',
+              msg: `${player} entered the room ${roomId}`
+            })
+            //console.log("newroom")
+            console.log(newPayload)
+            return newConnectFour.save();
+          } catch (e) { throw new Error("User creation error: " + e); }
+        }
+        break
+      }
+      default: break
+    }
+  }    
+})

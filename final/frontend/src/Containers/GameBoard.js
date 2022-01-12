@@ -3,13 +3,15 @@ import { Card, Row, Col, Image, Modal, Input} from 'antd'
 import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import axios from '../api'; 
+import ConnectFourModal from '../Components/ConnectFour/ConnectFourModal';
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card 
 
 const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
-                    photoURL, setPhotoURL}) =>{
+                    photoURL, setPhotoURL, playConnectFour}) =>{
     const[temp, setTemp] = useState('')  // used to record old photo
     const[photoModal, setPhotoModal] = useState(false)
+    const[connectFourVisible, setConnectFourVisible] = useState(false)
 
     return (
         <Layout>
@@ -37,7 +39,6 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     me,
                     newPhoto: temp
                   });
-                  console.log(URL)
                   setPhotoURL(URL)
                   setPhotoModal(false)
                 }}
@@ -90,10 +91,22 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                       hoverable
                       style={{ width: 240 }}
                       cover={<img alt="example" src="https://m.media-amazon.com/images/I/81fEiLrmZ8L._AC_SL1500_.jpg" />}
-                      onClick={() => setIsConnectFour(true)}
+                      onClick={() => setConnectFourVisible(true)}
                       >
                         <Meta title="Connect 4" description="Easy and fun. Recommended to beginners. " />
                       </Card>
+                      <ConnectFourModal
+                          visible={connectFourVisible}
+                          onCreate={async(name) => {
+                            await playConnectFour({roomId: name, player: me})
+                            setConnectFourVisible(false);
+                            setIsConnectFour(true)
+                          }}
+                          onCancel={() => {
+                            setConnectFourVisible(false);
+                            setIsConnectFour(false)
+                          }}
+                        />
                     </Col>
                     <Col span={8}>
                       <Card

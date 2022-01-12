@@ -1,5 +1,5 @@
-import { Layout, Button } from 'antd';
-import { useState } from 'react';
+import { Layout, Button, Image } from 'antd';
+import { useEffect, useState } from 'react';
 import Board from '../Components/ConnectFour/Board'
 
 const { Header, Footer, Content } = Layout;
@@ -12,13 +12,28 @@ const ConnectFour = (props) => {
         [null, null, null, null, null, null, null],
         [null, null, null, null, null, null, null],
     ]);
+    const [playerOne, setPlayerOne] = useState({})
+    const [playerTwo, setPlayerTwo] = useState({})
+    
+    useEffect(()=>{
+        const trueplayers = props.player.filter((e)=>{
+            return e.roomId === props.roomId;
+        });
+        if(trueplayers[0]){
+            setPlayerOne(()=>trueplayers[0])
+        }
+        if(trueplayers[1]){
+            setPlayerTwo(()=>trueplayers[1])
+        }
+        console.log(trueplayers)
+    },[props.player, props.roomId])
 
     return(
         <Layout>
             <Header className="site-layout-background">
             <Button
             onClick={()=>props.setIsConnectFour(false)}
-            >
+            > 
             Go Back!
             </Button>
             Connect Four!
@@ -26,12 +41,18 @@ const ConnectFour = (props) => {
             </Header>
             <Content>
                 <div style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <h1> Player 1: {props.me}</h1>
+                    <div>
+                        <h1> Player 1: {playerOne? playerOne.name:''}</h1>
+                        <Image height={200} src={playerOne? playerOne.pictureURL:''}/>
+                    </div>
                     <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
                         <h1> Player 1's turn </h1>
                         <Board board={board} setBoard={setBoard}></Board>
                     </div>
-                    <h1> Player 2: </h1>
+                    <div>
+                        <h1> Player 2: {playerTwo? playerTwo.name:''}</h1>
+                        <Image height={200} src={playerTwo? playerTwo.pictureURL:''}/>
+                    </div>
                 </div>
             </Content>
             <Footer>
