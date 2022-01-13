@@ -48,6 +48,7 @@ const broadcastStatus = (status) => {
 
 wss.on('connection', (ws) => {
   ws.onmessage = async (byteString) => {
+    
     const { data } = byteString
     const [task, payload] = JSON.parse(data)
     switch (task) {
@@ -61,7 +62,7 @@ wss.on('connection', (ws) => {
                 type: 'Full',
                 msg: 'The room is full.'
               })
-              //console.log("full")
+              console.log("full")
             }
             else{
               existing.player2 = await User.findOne({ name: player });
@@ -71,7 +72,7 @@ wss.on('connection', (ws) => {
                 type: 'Success',
                 msg: `${player} entered the room ${roomId}`
               })
-              //console.log("player2")
+              console.log("player2")
               console.log(newPayload)
               return existing.save();
             }
@@ -84,7 +85,7 @@ wss.on('connection', (ws) => {
               type: 'Success',
               msg: `${player} entered the room ${roomId}`
             })
-            //console.log("player1")
+            console.log("player1")
             console.log(newPayload)
             return existing.save();
           }
@@ -92,17 +93,49 @@ wss.on('connection', (ws) => {
         else{
           try {
             const newplayer = await User.findOne({ name: player });
-            const newConnectFour = new ConnectFour({ roomId, player1: newplayer});
+            const newBoard = [
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0],
+            ]
+            const newConnectFour = new ConnectFour({ roomId, player1: newplayer, board: newBoard});
             const newPayload = {roomId: roomId, name: player, pictureURL: newplayer.pictureURL}
             broadcastPlayer(['Enter',[newPayload]])
             broadcastStatus({
               type: 'Success',
               msg: `${player} entered the room ${roomId}`
             })
-            //console.log("newroom")
+            console.log("newroom")
             console.log(newPayload)
             return newConnectFour.save();
           } catch (e) { throw new Error("User creation error: " + e); }
+        }
+        break
+      }
+      case 'LeaveConnectFour': {
+        const { name } = payload
+        console.log(name)
+        const existing = await User.findOne({ name: name });
+        console.log(existing)
+        const find1 = await ConnectFour.findOne({ player1: existing });
+        const find2 = await ConnectFour.findOne({ player2: existing });
+        console.log(find1)
+        console.log(find2)
+        if(find1){
+          find1.player1 = null
+          if(!find1.player2){
+            await ConnectFour.deleteOne(find1)
+          }
+        }
+        if(find2){
+          find2.player2 = null
+          if(!find2.player1){
+            await ConnectFour.deleteOne(find2)
+          }
+          console.log(find2)
         }
         break
       }

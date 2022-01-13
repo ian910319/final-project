@@ -8,6 +8,7 @@ const useConnectFour = () => {
   const [status, setStatus] = useState({});
   const [roomId, setRoomId] = useState('')
   const playConnectFour = (payload) => { sendData(["ConnectFour", payload]);}
+  const leaveConnectFour = (payload) => { sendData(["LeaveConnectFour", payload])}
   
   client.onmessage = (byteString) => {
     const { data } = byteString;
@@ -15,14 +16,18 @@ const useConnectFour = () => {
     switch (task) {
       case "Enter": {
         setPlayer(() => [...player, ...payload])
-        setRoomId(() => payload[0].roomId)
-        console.log(player)
-        //console.log(roomId)
+        if(roomId==='')
+          setRoomId(() => payload[0].roomId)
         break;
       }
       case "status": {
         setStatus(() => payload); 
-        //console.log(status)
+        break;
+      }
+      case "Leave": {
+        const temp = player.fliter((e)=>{return e !== payload})
+        console.log(temp)
+        setPlayer(()=>temp)
         break;
       }
       default: 
@@ -34,7 +39,8 @@ const useConnectFour = () => {
     player,
     status,
     roomId,
-    playConnectFour
+    playConnectFour,
+    leaveConnectFour
  };
 };
 

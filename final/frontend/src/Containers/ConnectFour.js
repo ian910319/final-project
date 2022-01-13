@@ -1,22 +1,24 @@
 import { Layout, Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import Board from '../Components/ConnectFour/Board'
+import { deepCloneBoard } from '../Components/ConnectFour/utility'
 
 const { Header, Footer, Content } = Layout;
 const ConnectFour = (props) => {
     const [board, setBoard] = useState([
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
-        [null, null, null, null, null, null, null],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0],
     ]);
+    const [turn, setTurn] = useState(true)
     const [playerOne, setPlayerOne] = useState({})
     const [playerTwo, setPlayerTwo] = useState({})
-    
     useEffect(()=>{
         const trueplayers = props.player.filter((e)=>{
+            console.log(e.roomId)
             return e.roomId === props.roomId;
         });
         if(trueplayers[0]){
@@ -32,7 +34,12 @@ const ConnectFour = (props) => {
         <Layout>
             <Header className="site-layout-background">
             <Button
-            onClick={()=>props.setIsConnectFour(false)}
+            onClick={async()=>{
+                const leaving = props.player.filter((e)=>{return e.name === props.me;})
+                console.log(leaving)
+                await props.leaveConnectFour(leaving[0])
+                props.setIsConnectFour(false)
+            }}
             > 
             Go Back!
             </Button>
@@ -47,7 +54,10 @@ const ConnectFour = (props) => {
                     </div>
                     <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
                         <h1> Player 1's turn </h1>
-                        <Board board={board} setBoard={setBoard}></Board>
+                        {(playerOne.name && playerTwo.name)
+                        ?<Board board={board} setBoard={setBoard}></Board>
+                        :<div></div>
+                        }
                     </div>
                     <div>
                         <h1> Player 2: {playerTwo? playerTwo.name:''}</h1>

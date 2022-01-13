@@ -15,7 +15,7 @@ function App() {
   const [me, setMe] = useState('')
   const [isSixNimmt, setIsSixNimmt] = useState(false)
   const [photoURL, setPhotoURL] = useState('')
-  const {player, status, roomId, playConnectFour} = useConnectFour()
+  const {player, status, roomId, playConnectFour, leaveConnectFour} = useConnectFour()
 
   const toggle = () => {
     const now = !collapsed
@@ -52,6 +52,8 @@ function App() {
       setIsConnectFour = {setIsConnectFour}
       player = {player}
       roomId = {roomId}
+      leaveConnectFour = {leaveConnectFour}
+      me={me}
     />
     : isSixNimmt
     ? <SixNimmt 

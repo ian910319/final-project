@@ -11,7 +11,7 @@ const Board = (props) => {
                     <div style = {{display: "flex"}} key = {index1} id={Id}>
                         {singleRow.map((singleBlock, index2) => {
                             return (
-                                <Cell />
+                                <Cell key={index2} value={singleBlock} columnIndex={index2} play={index2}/>
                             );
                         })}
                     </div>

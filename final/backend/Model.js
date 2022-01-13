@@ -9,7 +9,8 @@ const UserSchema = new Schema({
 const ConnectFourSchema = new Schema({
   roomId: String,
   player1: { type: mongoose.Types.ObjectId, ref: "User" },
-  player2: { type: mongoose.Types.ObjectId, ref: "User" }
+  player2: { type: mongoose.Types.ObjectId, ref: "User" },
+  board:[[Number]]
 });
 
 
