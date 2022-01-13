@@ -1,4 +1,90 @@
-.PlayerBackground {
-    opacity: 0.5;
-    color: aliceblue;
+html, body {
+    height : 100%;
+}
+
+.Footer {
+    background-color: #c8dcf5;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+}
+.CardsArea {
+    background-color: #c8dcf5;
+    margin-left: 50px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    width: 30%;
+    height: 100%;
+    float: left;
+}
+
+.CardsRow {
+    width: 100%;
+    height: 100%;
+}
+
+.SingleCard {
+    width: 50px;
+    height: 50px;
+    background-color: green;
+    margin: 5px;
+    float: left;
+}
+
+
+
+.PlayerSeats {
+    background-color: #c8dcf5;
+    padding: 20px;
+    height: 260px;
+    margin-top: 20px;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    margin-left: 450px;
+}
+
+.Self {
+    width: 100%;
+    height: 50%;
+    float: left;
+}
+
+
+.MyHand {
+    background-color: #c8dcf5;
+    height:  120px;
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+p {
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.StartGame {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    align-self: center;
+}
+
+.GoBack {
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+#LobbyRoom {
+    margin-top: 20px;
+    display: block;
+    margin: auto;
 }

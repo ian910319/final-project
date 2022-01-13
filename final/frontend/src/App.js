@@ -6,6 +6,7 @@ import GameBoard from './Containers/GameBoard'
 import ConnectFour from "./Containers/ConnectFour";
 import SixNimmt from "./Containers/SixNimmt";
 import useConnectFour from "./Hooks/useConnectFour";
+import useSixNimmt from "./Hooks/useSixNimmt";
 
 function App() {
 
@@ -16,6 +17,9 @@ function App() {
   const [isSixNimmt, setIsSixNimmt] = useState(false)
   const [photoURL, setPhotoURL] = useState('')
   const {player, status, roomId, playConnectFour, leaveConnectFour} = useConnectFour()
+  const { sendLicensingCard, isgamestart, setIsgamestart,
+          selfCards, cards, sendCompare, players, addSixNimmtPlayer } = useSixNimmt(setIsSixNimmt);
+
 
   const toggle = () => {
     const now = !collapsed
@@ -58,6 +62,14 @@ function App() {
     : isSixNimmt
     ? <SixNimmt 
       setIsSixNimmt = {setIsSixNimmt}
+      me = {me}
+      sendLicensingCard = {sendLicensingCard}
+      isgamestart = {isgamestart}
+      setIsgamestart = {setIsgamestart}
+      selfCards = {selfCards}
+      cards = {cards}
+      sendCompare = {sendCompare}
+      players = {players}
     />
     : <GameBoard
       collapsed = {collapsed}
@@ -68,6 +80,8 @@ function App() {
       photoURL = {photoURL}
       setPhotoURL = {setPhotoURL}
       playConnectFour = {playConnectFour}
+      players = {players}
+      addSixNimmtPlayer = {addSixNimmtPlayer}
     />
     
     }
