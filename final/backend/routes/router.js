@@ -1,6 +1,8 @@
 import express from 'express'
 import { User } from '../Model'
 import mongoose from 'mongoose';
+import licensingcard from '../utilities';
+import { sixNimmtRoom } from '../models/sixNimmt_mongo';
 
 const router = express.Router()
 
@@ -22,6 +24,7 @@ const saveUser = async (name) => {
     else{
       try {
         const newUser = new User({ name, pictureURL: "error" });
+        //console.log("hi")
         photoURL = newUser.pictureURL
         return newUser.save();
       } catch (e) { throw new Error("User creation error: " + e); }
@@ -29,7 +32,7 @@ const saveUser = async (name) => {
 };
 
 router.post('/create-user', async(req, res) => {
-    try{
+    try{ 
       await saveUser(req.body.me)
       res.send({URL: photoURL})
     } catch(e) {res.status(404)}
@@ -54,5 +57,28 @@ router.post('/create-photo', async(req, res) => {
     } catch(e) {res.status(404)}
 })
 
-export default router
+router.post('/sixNimmt/licensingcard', async (req, res) => {
+  try {
+    const allcards = licensingcard(5);
+    const existing = await sixNimmtRoom.findOne({roomname: req.body.roomname})
+    
+    if (existing) {
+      existing.allcards = allcards;
+      existing.save();
+    } else {console.log("roomname not found")}
+    console.log(existing);
+  } catch (e) {res.status(404); console.log("lincense card error")}
+})
 
+router.post('/sixNimmt/judgecard', async (req, res) => {
+  try {
+    const chosencard = req.body.chosencard;
+    judgecards();
+
+  } catch (e) {res.status(404); console.log("judge card error")}
+})
+
+
+
+
+export default router
