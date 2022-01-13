@@ -7,7 +7,7 @@ const { Header, Content, Sider } = Layout;
 const { Meta } = Card
 
 const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
-                    photoURL, setPhotoURL}) =>{
+                    photoURL, setPhotoURL, players, addSixNimmtPlayer}) =>{
     const[temp, setTemp] = useState('')  // used to record old photo
     const[photoModal, setPhotoModal] = useState(false)
 
@@ -109,7 +109,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                       hoverable
                       style={{ width: 240 }}
                       cover={<img alt="example" src="https://www.gamesworld.com.au/wp-content/uploads/2020/04/6nimmt.jpg" />}
-                      onClick={() => setIsSixNimmt(true)}
+                      onClick={() => {setIsSixNimmt(true); addSixNimmtPlayer({room: "test", "user": me});}}
                       >
                         <Meta title="6 Nimmt" description="Very Exciting. Recommended to advanced players. " />
                       </Card>
