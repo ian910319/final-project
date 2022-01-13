@@ -1,7 +1,7 @@
 import express from 'express'
-import { User } from '../Model'
+import { User } from '../models/connectFour_mongo'
 import mongoose from 'mongoose';
-import licensingcard from '../utilities';
+import licensingcard from '../uitility/sixNimmt_utilities';
 import { sixNimmtRoom } from '../models/sixNimmt_mongo';
 
 const router = express.Router()

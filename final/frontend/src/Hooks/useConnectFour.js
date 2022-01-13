@@ -25,7 +25,11 @@ const useConnectFour = () => {
         break;
       }
       case "Leave": {
-        const temp = player.fliter((e)=>{return e !== payload})
+        const temp = player.filter((e)=>{
+          console.log(e)
+          console.log(payload)
+          return (e.name !== payload[0].name)
+        })
         console.log(temp)
         setPlayer(()=>temp)
         break;

@@ -1,13 +1,14 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import router from './routes/router'
-import cors from 'cors'
+import cors from 'cors' 
 import http from 'http'
 import WebSocket from 'ws'
-import {User, ConnectFour} from './Model'
+import {User, ConnectFour} from './models/connectFour_mongo'
 import {sendData, sendStatus, initData} from './wssConnect'
 import dotenv from "dotenv-defaults"
-import {licensingcard, judgecards} from "./utilities"
+import {licensingcard, judgecards} from "./uitility/sixNimmt_utilities"
+import {checkForWin} from "./uitility/connectFour_utilities"
 import {SixNimmtRoom, PlayerInfo} from "./models/sixNimmt_mongo"
 
 
@@ -16,7 +17,12 @@ dotenv.config();
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  }).then(() => console.log("mongo db connection created"))
+  }).then(async() => {
+    console.log("mongo db connection created")
+    try {
+      await ConnectFour.deleteMany({});
+    } catch (e) { throw new Error("Database deletion failed"); }
+  })
 
 const db = mongoose.connection
 const app = express()
@@ -92,7 +98,7 @@ wss.on('connection', (ws) => {
                 msg: `${player} entered the room ${roomId}`
               })
               console.log("player2")
-              console.log(newPayload)
+              //console.log(newPayload)
               return existing.save();
             }
           }
@@ -105,7 +111,7 @@ wss.on('connection', (ws) => {
               msg: `${player} entered the room ${roomId}`
             })
             console.log("player1")
-            console.log(newPayload)
+            //console.log(newPayload)
             return existing.save();
           }
         }
@@ -128,7 +134,7 @@ wss.on('connection', (ws) => {
               msg: `${player} entered the room ${roomId}`
             })
             console.log("newroom")
-            console.log(newPayload)
+            //console.log(newPayload)
             return newConnectFour.save();
           } catch (e) { throw new Error("User creation error: " + e); }
         }
@@ -136,28 +142,71 @@ wss.on('connection', (ws) => {
       }
       case 'LeaveConnectFour': {
         const { name } = payload
-        console.log(name)
+        //console.log(name)
         const existing = await User.findOne({ name: name });
-        console.log(existing)
+        //console.log(existing)
         const find1 = await ConnectFour.findOne({ player1: existing });
         const find2 = await ConnectFour.findOne({ player2: existing });
-        console.log(find1)
-        console.log(find2)
+        //console.log(find1)
+        //console.log(find2)
+        broadcastPlayer(['Leave',[payload]])
         if(find1){
           find1.player1 = null
-          if(!find1.player2){
-            await ConnectFour.deleteOne(find1)
-          }
+          return find1.save()
         }
         if(find2){
           find2.player2 = null
-          if(!find2.player1){
-            await ConnectFour.deleteOne(find2)
-          }
-          console.log(find2)
+          return find2.save()
         }
         break
       }
+      case 'Play': {
+        const { roomId, name, column } = payload
+        const existing = await ConnectFour.findOne({ roomId });
+        const player = await User.findOne({ name });
+        const one = existing.player1.toString()
+        const two = existing.player2.toString()
+        const playerID = player._id.toString()
+        
+        let chess = 0
+        if(one === playerID) chess = 1
+        if(two === playerID) chess = 2
+        for (let row = 5; row >= 0; row--) { 
+          if (!existing.board[row][column]) {
+            existing.board[row][column] = chess
+            break
+          } 
+        }
+        broadcastPlayer(['Move',{board: existing.board}])
+        let gameOver = checkForWin(existing.board)
+        if(gameOver){
+          broadcastPlayer(['GameOver',{result: gameOver}])
+        }
+        existing.markModified('board');
+        existing.save()
+        
+        break;
+      }
+      case 'Restart': {
+        const { roomId } = payload
+        const existing = await ConnectFour.findOne({ roomId });
+        const newBoard = [
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+        ]
+        existing.board = newBoard
+        existing.markModified('board');
+        broadcastPlayer(['Restart',{board: existing.board}])
+        existing.save()
+        break;
+      }
+/////////////////////////////////////////////////////
+//////////////////// FOR 6NIMMT /////////////////////
+/////////////////////////////////////////////////////
       case "addSixNimmtPlayer": {
         const { room, user } = payload;
         const existing = await SixNimmtRoom.findOne({roomname: room});

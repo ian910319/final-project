@@ -1,6 +1,6 @@
 import './Cell.css'
 
-const Cell = ({ value, columnIndex, play }) => {
+const Cell = ({ value, columnIndex, play, gameOver, turn }) => {
     let color = 'whiteCircle'
   
     if (value === 1) { color = 'redCircle'} 
@@ -12,6 +12,7 @@ const Cell = ({ value, columnIndex, play }) => {
             onClick={() => {
                 play(columnIndex)
             }}
+            style = {{pointerEvents: (turn||gameOver)?"none":""}}
         >  
             <div className={color}></div>
         </div>

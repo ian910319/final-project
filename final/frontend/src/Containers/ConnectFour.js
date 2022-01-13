@@ -1,34 +1,37 @@
 import { Layout, Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
 import Board from '../Components/ConnectFour/Board'
-import { deepCloneBoard } from '../Components/ConnectFour/utility'
+import useBoard from '../Hooks/useBoard';
 
 const { Header, Footer, Content } = Layout;
 const ConnectFour = (props) => {
-    const [board, setBoard] = useState([
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0],
-    ]);
-    const [turn, setTurn] = useState(true)
+    
+    const {board, gameOver, turn, setTurn, putChess, restart} = useBoard()
     const [playerOne, setPlayerOne] = useState({})
     const [playerTwo, setPlayerTwo] = useState({})
     useEffect(()=>{
         const trueplayers = props.player.filter((e)=>{
-            console.log(e.roomId)
             return e.roomId === props.roomId;
         });
         if(trueplayers[0]){
             setPlayerOne(()=>trueplayers[0])
         }
+        else{
+            setPlayerOne(undefined)
+        }
         if(trueplayers[1]){
             setPlayerTwo(()=>trueplayers[1])
         }
-        console.log(trueplayers)
-    },[props.player, props.roomId])
+        else{
+            setPlayerTwo(undefined)
+        }
+        if(playerOne && props.me===playerOne.name) setTurn(true)
+        else setTurn(false)
+    },[props.player, props.roomId, props.me])
+
+    const play = (c) => {
+        putChess({roomId: props.roomId, name: props.me, column: c})
+    }
 
     return(
         <Layout>
@@ -36,7 +39,6 @@ const ConnectFour = (props) => {
             <Button
             onClick={async()=>{
                 const leaving = props.player.filter((e)=>{return e.name === props.me;})
-                console.log(leaving)
                 await props.leaveConnectFour(leaving[0])
                 props.setIsConnectFour(false)
             }}
@@ -53,10 +55,27 @@ const ConnectFour = (props) => {
                         <Image height={200} src={playerOne? playerOne.pictureURL:''}/>
                     </div>
                     <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
-                        <h1> Player 1's turn </h1>
-                        {(playerOne.name && playerTwo.name)
-                        ?<Board board={board} setBoard={setBoard}></Board>
+                        {gameOver===0 ? !turn? <h1> Your Turn!</h1>: <h1>Oppnent's Turn!</h1>:<h1>Game Over!</h1>}
+                        {(playerOne && playerTwo)
+                        ?<Board board={board} play={play} gameOver={gameOver} turn={turn}></Board>
                         :<div></div>
+                        }
+                        {
+                            gameOver === 1 && <h1> Red Team Wins!</h1>
+                        }
+                        {
+                            gameOver === 2 && <h1> Yellow Team Wins!</h1>
+                        }
+                        {
+                            (playerOne && playerTwo && gameOver)
+                            ?<Button 
+                                onClick={async()=>{
+                                    restart({roomId: props.roomId})
+                                }}
+                            >
+                                Restart?
+                            </Button>
+                            :<></>
                         }
                     </div>
                     <div>
