@@ -14,6 +14,7 @@ const useSixNimmt = () => {
   const [cards, setCards] = useState([[]]);
   const [players, setPlayers] = useState([]);
   const [penaltyList, setPenaltyList] = useState([]);
+  const [photos, setPhotos] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState();
 
@@ -34,7 +35,9 @@ const useSixNimmt = () => {
     sendData(["compare", payload]);
   }
 
-  
+  const sendLogIn = (payload) => {
+    sendData(["login", payload]);
+  }
 
   client.onmessage = (byteString) => {
     const {data} = byteString;
@@ -44,6 +47,11 @@ const useSixNimmt = () => {
         const [players_name] = payload;
         //console.log(players_name);
         setPlayers(players_name);
+        break ;
+      }
+
+      case "givePhotos": {
+        setPhotos(payload);
         break ;
       }
 
@@ -63,7 +71,8 @@ const useSixNimmt = () => {
       }
 
       case "gamestarts" : {
-        setPlayers(payload);
+        const [pp] = payload
+        setPlayers(pp);
         setIsgamestart(true);
         break;
       }
@@ -75,6 +84,11 @@ const useSixNimmt = () => {
 
       case "penaltyupdate": {
         setPenaltyList(() => payload);
+        break ;
+      }
+
+      case "myhandupdate": {
+        setSelfCards(payload);
         break ;
       }
 
@@ -103,7 +117,9 @@ const useSixNimmt = () => {
         penaltyList,
         gameOver,
         setGameOver,
-        winner
+        winner,
+        photos,
+        sendLogIn,
     }
 
 };

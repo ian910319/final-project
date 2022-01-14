@@ -12,7 +12,7 @@ const sixNimmtRoomSchema = new Schema ({
 const playerInfoSchema = new Schema ({
     user: String,
     cards: [Number],
-    panelty: Number,
+    penalty: Number,
 })
 
 const SixNimmtRoom = mongoose.model('sixNimmtRoom', sixNimmtRoomSchema);

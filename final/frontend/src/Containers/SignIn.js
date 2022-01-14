@@ -9,19 +9,21 @@ const Title = styled.div`
     justify-content: center;
   
     h1 {
+    color:bisque;
     margin: 0;
     margin-right: 20px;
-    font-size: 3em;
+    font-size: 5em;
 }`;
 
 const Wrapper = styled.div`
   background-image: url(https://i.stack.imgur.com/p9mUO.jpg);
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  width: 800px;
+  width: auto;
   margin: auto;
 `
 const SignIn = ({ me, setMe, setSignedIn, setPhotoURL, sendLogIn, }) => (

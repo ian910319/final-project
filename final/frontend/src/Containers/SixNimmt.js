@@ -3,12 +3,12 @@ import { useRef, useState } from "react"
 import "./sixNimmt.css"
 import Player from "../Components/SixNimmt/Player"
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                    isgamestart, setIsgamestart, selfCards,
                    cards, sendCompare, players, penaltyList,
-                   gameOver, setgameOver, winner}) => {
+                   gameOver, setGameOver, winner, photos}) => {
     const chosencardRef = useRef(0);
     const roomname = "test";
     const gamestart = async () => {
@@ -23,6 +23,8 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
     }
     const handleonclick = async (item) => {
             chosencardRef.current = item;
+            console.log(players)
+            console.log(players.length)
             sendCompare({player: me, card: chosencardRef.current, number: players.length, room: roomname});
         }
     
@@ -37,12 +39,12 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
             <Content>
             {isgamestart ? (
                 <>
+                <Button onClick={() => setGameOver(true)}>
+                    gameOver
+                </Button>
                 <div className="MyHand">
                     <h3>My hand:</h3>
                     <div className="Self">
-                        {/*selfCards.map((item) => {
-                            return <div className = "SingleCard" onClick = {() => handleonclick(item)}> {item} </div>
-                        })*/}
                         {selfCards.map((item) => {
                             return (<div className = "SingleCard_in_MyHand" id = "BlueCard" onClick = {() => handleonclick(item)}>
                                 <div className = "BlueCardNumber">{item}</div>
@@ -74,7 +76,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                 </div>
                 <div className="PlayerSeats">
                     {players.map((item, index1) => {
-                        return <Player name = {item} key = {index1} penalty = {penaltyList[index1]}/>
+                        return <Player name = {item} key = {index1} penalty = {penaltyList[index1]} photo = {photos[index1]}/>
                     })}
                 </div>
                 </>) : 
@@ -82,9 +84,9 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                     <img id = "LobbyRoom" alt = "lobby_room" src={[require("./LOBBY_ROOM.png")]} width = "500" ></img>
                     <br></br>
                     <div className="GoBack"> 
-                        <Button onClick={() => setIsSixNimmt(false)}>
-                            Go Back!
-                        </Button>
+                    <div className="StartGame">
+                            {players[0] === me ? <Button onClick = {() => gamestart()}>START GAME </Button> : <></>}
+                        </div>
                     </div>
                 </>
                 }
