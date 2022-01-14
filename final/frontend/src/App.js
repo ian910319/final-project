@@ -7,6 +7,7 @@ import ConnectFour from "./Containers/ConnectFour";
 import SixNimmt from "./Containers/SixNimmt";
 import useConnectFour from "./Hooks/useConnectFour";
 import useSixNimmt from "./Hooks/useSixNimmt";
+import useLogIn from "./Hooks/useLogIn"
 
 function App() {
 
@@ -18,9 +19,9 @@ function App() {
   const [photoURL, setPhotoURL] = useState('')
   const {player, status, roomId, playConnectFour, leaveConnectFour} = useConnectFour()
   const { sendLicensingCard, isgamestart, setIsgamestart,
-          selfCards, cards, sendCompare, players, addSixNimmtPlayer } = useSixNimmt(setIsSixNimmt);
-
-
+          selfCards, cards, sendCompare, players, addSixNimmtPlayer, penaltyList, gameOver, setGameOver, winner } = useSixNimmt(setIsSixNimmt);
+  const { sendLogIn, } = useLogIn();
+  
   const toggle = () => {
     const now = !collapsed
     setCollapsed(now)
@@ -50,6 +51,7 @@ function App() {
       setMe = {setMe} 
       setSignedIn = {setSignedIn}
       setPhotoURL = {setPhotoURL}
+      sendLogIn = {sendLogIn}
     />
     : isConnectFour
     ? <ConnectFour
@@ -70,6 +72,10 @@ function App() {
       cards = {cards}
       sendCompare = {sendCompare}
       players = {players}
+      penaltyList = {penaltyList}
+      gameOver = {gameOver}
+      setGameOver = {setCollapsed}
+      winner = {winner}
     />
     : <GameBoard
       collapsed = {collapsed}

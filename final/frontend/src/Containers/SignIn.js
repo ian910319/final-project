@@ -15,6 +15,7 @@ const Title = styled.div`
 }`;
 
 const Wrapper = styled.div`
+  background-image: url(https://i.stack.imgur.com/p9mUO.jpg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -23,7 +24,7 @@ const Wrapper = styled.div`
   width: 800px;
   margin: auto;
 `
-const SignIn = ({ me, setMe, setSignedIn, setPhotoURL }) => (
+const SignIn = ({ me, setMe, setSignedIn, setPhotoURL, sendLogIn, }) => (
   <Wrapper>
     <Title>
       <h1>The Entrance of Board Game World...</h1>
@@ -36,11 +37,8 @@ const SignIn = ({ me, setMe, setSignedIn, setPhotoURL }) => (
       size="large" style={{ width: 300, margin: 50}}
       onSearch={async() => {
         setSignedIn(true);
-        const {
-          data: { URL },
-        } = await axios.post('/api/create-user', {
-          me
-        });
+        const {data: { URL }} = await axios.post('/api/create-user', { me });
+        sendLogIn({user: me});
         console.log(URL)
         setPhotoURL(URL)
       }}

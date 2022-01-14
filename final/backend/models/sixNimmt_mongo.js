@@ -7,13 +7,11 @@ const sixNimmtRoomSchema = new Schema ({
     players: [String],
     allcards: [Number],
     cardboard: [[Number], [Number], [Number], [Number]],
-
 })
 
 const playerInfoSchema = new Schema ({
     user: String,
     cards: [Number],
-    selectedcard: Number,
     panelty: Number,
 })
 
