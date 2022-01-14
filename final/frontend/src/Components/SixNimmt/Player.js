@@ -1,5 +1,5 @@
 import styled from "styled-components";
-//import "./sixNimmt.css"
+import "../../Containers/sixNimmt.css"
 
 const PlayerBackground = styled.div`
     width: 15%;
@@ -17,7 +17,8 @@ const Player = ({name, penalty, photo, chosenList}) => {
             <strong> {name} </strong><br></br>
             <img alt = " " src = {photo} width = "90" height = "50" ></img><br></br>
             <p> penalty {penalty}</p>
-            <div className = "WhiteCard" width = "80" height = "auto"> {chosenList} </div>
+            
+            <div alt = " " src = {[require("./backside.png")]} width = "80" height = "auto">{chosenList}</div>
         </PlayerBackground>
 
 

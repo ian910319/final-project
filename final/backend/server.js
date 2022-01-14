@@ -290,9 +290,9 @@ wss.on('connection', (ws) => {
                     else if (newrow[i] % 5 === 0)   penalty += 2;
                     else                              penalty += 1;
                   }
-                  console.log("dfdfd");
+                  //console.log("dfdfd");
                   const oldpenalty = await PlayerInfo.findOne({user: sorted[j].player}, {penalty: 1});
-                  console.log(oldpenalty)
+                  //console.log(oldpenalty)
                   await PlayerInfo.updateOne({user: sorted[j].player}, {penalty:oldpenalty.penalty + penalty});
                   const playerList = existing.players;
                   var penaltyList = [];
@@ -331,7 +331,8 @@ wss.on('connection', (ws) => {
           console.log(comparecards)
           const havecards = await PlayerInfo.findOne({"user": comparecards[0].player})            
           if (havecards.cards.length === 0) {                     // if no cards, game over
-            setTimeout(10000);
+            console.log("here");
+            //setTimeout(console.log("Hello!"), 10000);
             const winner = await PlayerInfo.find().sort({penalty: 1}).limit(1);
             broadcastMessage(["gameover", [winner.player]], {
               type: "gameover", msg: "game finished"

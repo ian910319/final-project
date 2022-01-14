@@ -82,9 +82,6 @@ h3 {
 }
 
 
-
-
-
 #WhiteCard {
     background-image: url(whitecard.png);
 }
@@ -165,7 +162,7 @@ h3 {
 }
 .PurpleCardNumber {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 50px;
+    font-size: 40px;
     color: #efff68;
     text-align: center;
     line-height: 130px;
@@ -206,4 +203,21 @@ h1 {
     margin-top: 20px;
     display: block;
     margin: auto;
+}
+
+.SingleCard_in_MyHand:hover {
+    transform : scale(1.1);
+}
+.SingleCard_in_MyHand:active {
+    opacity: 0.8;
+}
+.SingleCard_in_MyHand_clicked {
+    width: 90px;
+    height: 130px;
+    float: left;
+    background-position: center;
+    background-size:  80px auto;
+    background-repeat:no-repeat;
+    margin: 0 auto;
+    transform : scale(1.1);
 }
