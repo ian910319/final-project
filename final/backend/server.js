@@ -245,13 +245,19 @@ wss.on('connection', (ws) => {
         //***************** all player draw cards******************//
         if (comparecards.length === number) {                                      // get all chosen cards
           var sorted = comparecards.sort(({card: a}, {card: b}) => a - b);        // sort in increasing order
-          console.log(comparecards)
+          //console.log(comparecards)
           const existing = await SixNimmtRoom.findOne({roomname: room});
 
           //******* put cards into rows*******/
           var j = 0;
           while (j !== sorted.length) {
-            var num = sorted[j].card;                                             // card number              
+            var num = sorted[j].card;                                             // card number
+            var chosenCardDisplay = [];
+            for (var i = 0; i < existing.players.length; i++) {
+              for (var k = 0; k < comparecards.length && comparecards[k].player !== existing.players[i]; k++);
+              chosenCardDisplay[i] = comparecards[k].card;
+            }
+            broadcastMessage(["chosenCardDisplay", chosenCardDisplay]);
             if (existing) {                                                       // search which row to insert
               var tobecomp = [];
               for (var i = 0; i < 4; i++) {

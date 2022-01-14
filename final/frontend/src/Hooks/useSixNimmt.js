@@ -17,21 +17,18 @@ const useSixNimmt = () => {
   const [photos, setPhotos] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState();
+  const [chosenList, setChosenList] = useState([]);
 
 
   const addSixNimmtPlayer = (payload) => {
-    //console.log("here1");
     sendData(["addSixNimmtPlayer", payload])  
   }
   
   const sendLicensingCard = (payload) => {
-   // console.log("here2");
-    //console.log(payload)
     sendData(["start", payload])                // start game
   }
 
   const sendCompare = (payload) => {
-    //console.log("sendCompare:", payload);
     sendData(["compare", payload]);
   }
 
@@ -45,21 +42,22 @@ const useSixNimmt = () => {
     switch (task) {
       case "playeradd": {
         const [players_name] = payload;
-        //console.log(players_name);
-        setPlayers(players_name);
+        setPlayers(() => players_name);
         break ;
       }
 
       case "givePhotos": {
-        setPhotos(payload);
+        setPhotos(() => payload);
+        break ;
+      }
+
+      case "chosenCardDisplay": {
+        setChosenList(() => payload);
         break ;
       }
 
       case "dispensecards": {
-        //console.log("here3");
-        //console.log(payload)
         const [cardsGet, initialcards] = payload;
-        //console.log(cardsGet)
         setSelfCards(cardsGet);
         setCards(() => [
           [initialcards[0], null, null, null, null, null],
@@ -88,7 +86,7 @@ const useSixNimmt = () => {
       }
 
       case "myhandupdate": {
-        setSelfCards(payload);
+        setSelfCards(() => payload);
         break ;
       }
 
@@ -103,25 +101,25 @@ const useSixNimmt = () => {
     }
  }
 
-
-    return {
-        sendLicensingCard,
-        setIsgamestart,
-        isgamestart,
-        selfCards,
-        cards,
-        sendCompare,
-        setPlayers,
-        players,
-        addSixNimmtPlayer,
-        penaltyList,
-        gameOver,
-        setGameOver,
-        winner,
-        photos,
-        sendLogIn,
-    }
-
+  return {
+    sendLicensingCard,
+    setIsgamestart,
+    isgamestart,
+    selfCards,
+    cards,
+    sendCompare,
+    setPlayers,
+    players,
+    addSixNimmtPlayer,
+    penaltyList,
+    gameOver,
+    setGameOver,
+    winner,
+    photos,
+    sendLogIn,
+    chosenList,
+    setChosenList, 
+  }
 };
 
 export default useSixNimmt;

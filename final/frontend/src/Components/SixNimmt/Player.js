@@ -5,17 +5,19 @@ const PlayerBackground = styled.div`
     width: 15%;
     float: left;
     margin: 10px;
-    opacity: 0.5;
     color: aliceblue;
 `;
+const WhiteCard = styled.div`
+    background-image: url(whitecard.png);
+`
 
-const Player = ({name, penalty, photo}) => {
+const Player = ({name, penalty, photo, chosenList}) => {
     return (
         <PlayerBackground>
             <strong> {name} </strong><br></br>
-            <img alt = "example" src = {photo} width = "90" height = "50" ></img><br></br>
+            <img alt = " " src = {photo} width = "90" height = "50" ></img><br></br>
             <p> penalty {penalty}</p>
-            <img alt = "example" src = {[require("./backside.png")]} width = "80" height = "auto"></img>
+            <div className = "WhiteCard" width = "80" height = "auto"> {chosenList} </div>
         </PlayerBackground>
 
 

@@ -8,7 +8,8 @@ const { Header, Content } = Layout;
 const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                    isgamestart, setIsgamestart, selfCards,
                    cards, sendCompare, players, penaltyList,
-                   gameOver, setGameOver, winner, photos}) => {
+                   gameOver, setGameOver, winner, photos, 
+                   chosenList, setChosenList}) => {
     const chosencardRef = useRef(0);
     const roomname = "test";
     const gamestart = async () => {
@@ -76,7 +77,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                 </div>
                 <div className="PlayerSeats">
                     {players.map((item, index1) => {
-                        return <Player name = {item} key = {index1} penalty = {penaltyList[index1]} photo = {photos[index1]}/>
+                        return <Player name = {item} key = {index1} penalty = {penaltyList[index1]} photo = {photos[index1]} chosenList = {chosenList[index1]} />
                     })}
                 </div>
                 </>) : 
