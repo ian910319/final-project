@@ -9,7 +9,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                    isgamestart, setIsgamestart, selfCards,
                    cards, sendCompare, players, penaltyList,
                    gameOver, setGameOver, winner, photos, 
-                   chosenList, roomname, sendLeaveRoom}) => {
+                   chosenList, roomname, sendLeaveRoom,}) => {
     const chosencardRef = useRef(0);
     //const roomname = "test";
     const gamestart = async () => {
@@ -24,7 +24,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
     const handleonclick = async (item, index) => {
         chosencardRef.current = item;
         sendCompare({player: me, card: chosencardRef.current, number: players.length, room: roomname});
-        console.log(index);
+        //console.log(index);
         setTimeout(function(){
             document.getElementsByClassName('SingleCard_in_MyHand_clicked')[0].className = 'SingleCard_in_MyHand';
         },50);       
@@ -36,24 +36,19 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
     const handleGoBack = () => {
         setIsSixNimmt(false);
         setIsgamestart(false);
-        sendLeaveRoom(roomname, me);
+        sendLeaveRoom({roomname, me});
     }
     
     const restartGame = async () => {
         setGameOver(false);
         setIsgamestart(false);
-        setIsSixNimmt(true);
-        console.log(players)
-        if (players[0] === me) {                                                  // if I am the host
-            sendLicensingCard({room: roomname, number: players.length, six_players: players});
-        }
-    winner = "";
+        alert("Please wait for the host to restart the game.");
     }
     
     const backToHome = () => {
         setGameOver(false);
-        winner = "";
         setIsSixNimmt(false);
+        sendLeaveRoom({roomname, me});
     }
     const findcardcolor = (item) => {
         var penalty = 0;
@@ -91,8 +86,9 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                     <div className = 'modal'>
                         <div className = 'modalWrapper'>
                             <div className = 'modalContent'>
-                                {winner === me ? <div className = 'modalResult'>YOU WIN</div> : <div className = 'modalResult'>Game Over</div>}
+                                {winner === me ? <div className = 'modalResult'>CONGRADULATIONS! YOU WIN</div> : <div className = 'modalResult'>SO SAD, {winner} IS THE WINNER</div>}
                                 <div className='modalBtnWrapper'>
+
                                     <div className = 'modalBtn' onClick = {() => restartGame()}>New Game</div>
                                     <div className = 'modalBtn' onClick = {() => backToHome()}>Back to Home</div>
                                 </div>
@@ -105,17 +101,9 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
 
             {isgamestart ? (
                 <>
-                <Button onClick={() => setGameOver(true)}>
-                    gameOver
-                </Button>
                 <div className="MyHand">
-                    <h3>My hand:</h3>
+                    <h3>{me}'s hand:</h3>
                     <div className="Self">
-                        {/*selfCards.map((item, index) => {
-                            return (<div className = "SingleCard_in_MyHand" id = "BlueCard" onClick = {() => handleonclick(item, index)}>
-                            <div className = "BlueCardNumber">{item}</div>
-                        </div>)
-                        })*/}
                         {selfCards.map((item, index) => {
                             var Id = findcardcolor(item);
                             return (<div className = "SingleCard_in_MyHand" id = {Id} onClick = {() => handleonclick(item, index)}>
@@ -130,13 +118,6 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                         const Id = 'row'+index1.toString();
                         return (
                             <div className="CardsRow" key = {index1} id = {Id}>
-                                {/*singleRow.map((item) => {
-                                    return (
-                                        <div className="SingleCard_in_CardsArea" id = "WhiteCard">
-                                            <div className = "WhiteCardNumber"> {item} </div>
-                                        </div>
-                                    )
-                                })*/}
                                 {singleRow.map((item) => {
                                     var Id = findcardcolor(item);
                                     return (

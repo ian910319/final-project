@@ -28,7 +28,7 @@ const useSixNimmt = () => {
 
   const sendLeaveRoom = (payload) => {
     console.log(payload);
-    sendData("leaveSixNimmtRoom", payload);
+    sendData(["leaveSixNimmtRoom", payload]);
   }
 
   const addSixNimmtPlayer = (payload) => {
@@ -70,15 +70,24 @@ const useSixNimmt = () => {
       }
 
       case "sixNimmtRoomLobby": {
+        setIsSixNimmt(true);
+        setRoomname(() => payload)
+        break ;
+      }
+
+      case "someoneLeave": {
+        setPlayers(() => payload);
         break ;
       }
 
       case "playeradd": {
+        console.log(payload);
         setPlayers(() => payload);
         break ;
       }
 
       case "givePhotos": {
+        //console.log(payload);
         setPhotos(() => payload);
         break ;
       }
@@ -122,7 +131,8 @@ const useSixNimmt = () => {
       }
 
       case "gameover": {
-        setWinner(() => payload);
+        console.log(payload);
+        setWinner(payload);
         setGameOver(true);
         break ;
       }
@@ -154,7 +164,6 @@ const useSixNimmt = () => {
     setIsSixNimmt,
     isSixNimmt,
     sendLeaveRoom,
-
   }
 };
 

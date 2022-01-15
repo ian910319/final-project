@@ -2,6 +2,11 @@ html, body {
     height : 100%;
 }
 
+h2 {
+    font-size: 30px;
+    font-family: Arial Black;
+}
+
 h3 {
     font-size: 35px;
     font-family: Arial Black;
@@ -179,8 +184,10 @@ p {
     font-family: fantasy;
     margin-top: 10px;
     font-size: 30px;
+    color: #000;
 }
 h1 {
+    color: #000;
     font-family: fantasy;
     margin-top: 10px;
     margin-bottom: 5px;
@@ -227,18 +234,18 @@ h1 {
 }
 .modal{
     z-index: 1;
-    margin: auto;
-    height: 100%;
+    margin: 0 auto;
+    height: 50%;
     width: 100%;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
 }
 .modalWrapper{
-    height: 25%;
+    height: 75%;
+    margin-top: 150px;
 }
 .modalContent{
     margin: auto 20%;
@@ -294,4 +301,8 @@ h1 {
 
 .PlayersBoard {
     text-align: center;
+}
+
+#Space {
+    background-image: url(space.png);
 }

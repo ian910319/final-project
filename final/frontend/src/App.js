@@ -20,7 +20,7 @@ function App() {
           selfCards, cards, sendCompare, players, addSixNimmtPlayer,
           penaltyList, gameOver, setGameOver, winner, photos, sendLogIn,
           chosenList, sendCheckSixNimmtRoom, roomname, setIsSixNimmt,
-          isSixNimmt, sendLeaveRoom} = useSixNimmt();
+          isSixNimmt, sendLeaveRoom,} = useSixNimmt();
   
   const toggle = () => {
     const now = !collapsed
