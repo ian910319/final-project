@@ -4,14 +4,16 @@ import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFold
 import { useState } from 'react';
 import axios from '../api'; 
 import ConnectFourModal from '../Components/ConnectFour/ConnectFourModal';
+import SixNimmtModal from "../Components/SixNimmt/SixNimmtModal"
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card  
 
 const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
-                    photoURL, setPhotoURL, playConnectFour, players, addSixNimmtPlayer}) =>{
+                    photoURL, setPhotoURL, playConnectFour, players, sendCheckSixNimmtRoom}) =>{
     const[temp, setTemp] = useState('')  // used to record old photo
     const[photoModal, setPhotoModal] = useState(false)
     const[connectFourVisible, setConnectFourVisible] = useState(false)
+    const [sixNimmtVisible, setSixNimmtVisible] = useState(false);
 
     return (
         <Layout>
@@ -122,10 +124,18 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                       hoverable
                       style={{ width: 240 }}
                       cover={<img alt="example" src="https://www.gamesworld.com.au/wp-content/uploads/2020/04/6nimmt.jpg" />}
-                      onClick={() => {setIsSixNimmt(true); addSixNimmtPlayer({room: "test", "user": me});}}
+                      onClick={() => setSixNimmtVisible(true)}
                       >
                         <Meta title="6 Nimmt" description="Very Exciting. Recommended to advanced players. " />
                       </Card>
+                      <SixNimmtModal
+                          visible = {sixNimmtVisible}
+                          onCreate = {(roomname) => sendCheckSixNimmtRoom({roomname, me})}
+                          onCancel={() => {
+                            setSixNimmtVisible(false);
+                            setIsSixNimmt(false)
+                          }}
+                        />
                     </Col>
                   </Row>
                   <Row gutter={16}>

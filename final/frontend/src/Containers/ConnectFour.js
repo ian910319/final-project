@@ -63,8 +63,8 @@ const ConnectFour = (props) => {
             <Content>
                 <div style={{display: "flex", flexDirection: 'row', justifyContent: 'space-between'}}>
                     <div>
-                        <h1> Player 1: {playerOne? playerOne.name:''}</h1>
-                        <Image height={200} src={playerOne? playerOne.pictureURL:''}/>
+                        <h1> Player 1: {playerOne? playerOne.name:'Waiting...'}</h1>
+                        <Image height={200} src={playerOne? playerOne.pictureURL:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU"}/>
                     </div>
                     <div style={{display: "flex", flexDirection: 'column', alignItems: 'center'}}>
                         {gameOver===0 ? !turn? <h1> Your Turn!</h1>: <h1>Oppnent's Turn!</h1>:<h1>Game Over!</h1>}
@@ -91,8 +91,8 @@ const ConnectFour = (props) => {
                         }
                     </div>
                     <div>
-                        <h1> Player 2: {playerTwo? playerTwo.name:''}</h1>
-                        <Image height={200} src={playerTwo? playerTwo.pictureURL:''}/>
+                        <h1> Player 2: {playerTwo? playerTwo.name:'Waiting...'}</h1>
+                        <Image height={200} src={playerTwo? playerTwo.pictureURL:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU"}/>
                     </div>
                 </div>
             </Content>

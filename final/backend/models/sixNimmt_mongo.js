@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 const sixNimmtRoomSchema = new Schema ({
     roomname: String,
+    status: Boolean,
     players: [String],
     allcards: [Number],
     cardboard: [[Number], [Number], [Number], [Number]],

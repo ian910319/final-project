@@ -7,9 +7,6 @@ const PlayerBackground = styled.div`
     margin: 10px;
     color: aliceblue;
 `;
-const WhiteCard = styled.div`
-    background-image: url(whitecard.png);
-`
 
 const Player = ({name, penalty, photo, chosenList}) => {
     return (
