@@ -1,6 +1,6 @@
 import "./App.css"
 import { useState, useEffect } from 'react';
-import { message } from 'antd'
+import { message } from "antd";
 import SignIn from "./Containers/SignIn";
 import GameBoard from './Containers/GameBoard'
 import ConnectFour from "./Containers/ConnectFour";
@@ -16,7 +16,7 @@ function App() {
   const [me, setMe] = useState('')
   const [isSixNimmt, setIsSixNimmt] = useState(false)
   const [photoURL, setPhotoURL] = useState('')
-  const {player, status, roomId, playConnectFour, leaveConnectFour} = useConnectFour()
+  const {player, status, roomId, setStatus, playConnectFour, leaveConnectFour} = useConnectFour()
   const { sendLicensingCard, isgamestart, setIsgamestart,
           selfCards, cards, sendCompare, players, addSixNimmtPlayer,
           penaltyList, gameOver, setGameOver, winner, photos, sendLogIn,
@@ -26,6 +26,20 @@ function App() {
     const now = !collapsed
     setCollapsed(now)
   };
+   const displayStatus = (payload) => {
+    if (payload.msg) {
+      const { type, msg } = payload
+      const content = {
+        content: msg, duration: 0.5 }
+      switch (type) {
+        case 'Full':
+          message.error(content)
+          break
+        default:
+          break
+    }}}
+  useEffect(() => {displayStatus(status)}, [status])
+
   return (
     <>
     {
@@ -43,6 +57,9 @@ function App() {
       player = {player}
       roomId = {roomId}
       leaveConnectFour = {leaveConnectFour}
+      status={status}
+      setStatus={setStatus}
+      displayStatus={displayStatus}
       me={me}
     />
     : isSixNimmt

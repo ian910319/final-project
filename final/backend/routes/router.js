@@ -1,7 +1,7 @@
 import express from 'express'
-import { User } from '../Model'
+import { User } from '../models/connectFour_mongo'
 import mongoose from 'mongoose';
-import licensingcard from '../utilities';
+import licensingcard from '../uitility/sixNimmt_utilities';
 import { sixNimmtRoom } from '../models/sixNimmt_mongo';
 
 const router = express.Router()
@@ -23,7 +23,7 @@ const saveUser = async (name) => {
     }
     else{
       try {
-        const newUser = new User({ name, pictureURL: "error" });
+        const newUser = new User({ name, pictureURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU" });
         //console.log("hi")
         photoURL = newUser.pictureURL
         return newUser.save();
