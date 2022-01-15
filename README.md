@@ -1,5 +1,4 @@
 # Group26 : 多人遊戲大全
-## Installation and Usage
 ## Member
 * 電機二江承恩 B09901099
 * 電機二陳品睿 B09901194
