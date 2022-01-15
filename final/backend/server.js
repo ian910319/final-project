@@ -243,9 +243,11 @@ wss.on('connection', (ws) => {
         var photos = [];
         var ihatedebug = [];
         const existRoom = await SixNimmtRoom.findOne({roomname: room});
+        
         for (var i = 0; i < existRoom.players.length; i++) {                  // send players' picture
           const uu = await User.findOne({name: existRoom.players[i]});
           photos[i] = uu.pictureURL;
+          PlayerInfo.updateOne({user: existRoom.players[i]}, {penalty: 0});
         }
         existRoom.status = true;
         await existRoom.save();
