@@ -6,8 +6,5 @@
   "scripts": {
     "start": "cd frontend && yarn start",
     "server": "cd backend && yarn server"
-  },
-  "dependencies": {
-    "ws": "^8.4.0"
   }
 }

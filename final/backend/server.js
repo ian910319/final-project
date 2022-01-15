@@ -67,8 +67,9 @@ var i;
 var id = 0;
 var lookup = {};
 var comparecards = [];
+var connectFourPlayers = []
 ///////////////////////////////////////////////////////////////////
-
+ 
 wss.on('connection', (ws) => {
   ws.onmessage = async (byteString) => {
     
@@ -85,14 +86,16 @@ wss.on('connection', (ws) => {
             if(existing.player2){
               broadcastStatus({
                 type: 'Full',
-                msg: 'The room is full.'
+                msg: 'The room is full.',
+                name: player
               })
-              console.log("full")
-            }
+              console.log("full") 
+            } 
             else{
               existing.player2 = await User.findOne({ name: player });
               const newPayload = {roomId: roomId, name: player, pictureURL: existing.player2.pictureURL}
-              broadcastPlayer(['Enter',[newPayload]])
+              connectFourPlayers.push(newPayload)
+              broadcastPlayer(['Enter',{list: connectFourPlayers}])
               broadcastStatus({
                 type: 'Success',
                 msg: `${player} entered the room ${roomId}`
@@ -105,7 +108,8 @@ wss.on('connection', (ws) => {
           else{
             existing.player1 = await User.findOne({ name: player });
             const newPayload = {roomId: roomId, name: player, pictureURL: existing.player1.pictureURL}
-            broadcastPlayer(['Enter',[newPayload]])
+            connectFourPlayers.push(newPayload)
+            broadcastPlayer(['Enter',{list: connectFourPlayers}])
             broadcastStatus({
               type: 'Success',
               msg: `${player} entered the room ${roomId}`
@@ -128,7 +132,8 @@ wss.on('connection', (ws) => {
             ]
             const newConnectFour = new ConnectFour({ roomId, player1: newplayer, board: newBoard});
             const newPayload = {roomId: roomId, name: player, pictureURL: newplayer.pictureURL}
-            broadcastPlayer(['Enter',[newPayload]])
+            connectFourPlayers.push(newPayload)
+            broadcastPlayer(['Enter',{list: connectFourPlayers}])
             broadcastStatus({
               type: 'Success',
               msg: `${player} entered the room ${roomId}`
@@ -142,6 +147,9 @@ wss.on('connection', (ws) => {
       }
       case 'LeaveConnectFour': {
         const { name } = payload
+        connectFourPlayers = connectFourPlayers.filter((e)=>{
+          return e.name !== name
+        })
         //console.log(name)
         const existing = await User.findOne({ name: name });
         //console.log(existing)
@@ -149,14 +157,26 @@ wss.on('connection', (ws) => {
         const find2 = await ConnectFour.findOne({ player2: existing });
         //console.log(find1)
         //console.log(find2)
-        broadcastPlayer(['Leave',[payload]])
+        const newBoard = [
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+          [0, 0, 0, 0, 0, 0, 0],
+        ]
+        broadcastPlayer(['Leave',{list: connectFourPlayers}])
         if(find1){
           find1.player1 = null
-          return find1.save()
+          find1.board = newBoard
+          find1.markModified('board');
+          find1.save()
         }
         if(find2){
           find2.player2 = null
-          return find2.save()
+          find2.board = newBoard
+          find2.markModified('board');
+          find2.save()
         }
         break
       }
@@ -176,14 +196,14 @@ wss.on('connection', (ws) => {
             existing.board[row][column] = chess
             break
           } 
-        }
-        broadcastPlayer(['Move',{board: existing.board}])
+        } 
+        broadcastPlayer(['Move',{board: existing.board, roomId}])
         let gameOver = checkForWin(existing.board)
         if(gameOver){
-          broadcastPlayer(['GameOver',{result: gameOver}])
+          broadcastPlayer(['GameOver',{result: gameOver, roomId}])
         }
         existing.markModified('board');
-        existing.save()
+        existing.save() 
         
         break;
       }
@@ -200,7 +220,7 @@ wss.on('connection', (ws) => {
         ]
         existing.board = newBoard
         existing.markModified('board');
-        broadcastPlayer(['Restart',{board: existing.board}])
+        broadcastPlayer(['Restart',{board: existing.board, roomId}])
         existing.save()
         break;
       }

@@ -14,6 +14,7 @@ const useBoard = () => {
     ]);
     const [gameOver, setGameOver] = useState(0)
     const [turn, setTurn] = useState(true)
+    const [myRoom, setMyRoom] = useState('')
     const putChess = (payload) => { sendData(["Play", payload]);}
     const restart = (payload) =>{sendData(["Restart", payload])}
     client.onmessage = (byteString) => {
@@ -21,17 +22,25 @@ const useBoard = () => {
         const [task, payload] = JSON.parse(data); 
         switch (task) {
             case "Move": {
-                setBoard(()=>payload.board)
-                setTurn(()=>!turn)
+                console.log(payload.roomId)
+                console.log(myRoom)
+                if(payload.roomId === myRoom){
+                    setBoard(()=>payload.board)
+                    setTurn(()=>!turn)
+                }
                 break
             }
             case "GameOver": {
-                setGameOver(payload.result)
+                if(payload.roomId === myRoom)
+                    setGameOver(payload.result)
                 break;
             }
             case "Restart": {
-                setGameOver(0)
-                setBoard(()=>payload.board)
+                if(payload.roomId === myRoom){
+                    setGameOver(0)
+                    setBoard(()=>payload.board)
+                    setTurn(()=>!turn)
+                }
                 break;
             }
             default: 
@@ -42,6 +51,7 @@ const useBoard = () => {
         board,
         gameOver,
         turn,
+        setMyRoom,
         setTurn,
         putChess,
         restart

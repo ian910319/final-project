@@ -6,7 +6,7 @@ import useBoard from '../Hooks/useBoard';
 const { Header, Footer, Content } = Layout;
 const ConnectFour = (props) => {
     
-    const {board, gameOver, turn, setTurn, putChess, restart} = useBoard()
+    const {board, gameOver, turn, setMyRoom, setTurn, putChess, restart} = useBoard()
     const [playerOne, setPlayerOne] = useState({})
     const [playerTwo, setPlayerTwo] = useState({})
     useEffect(()=>{
@@ -28,6 +28,18 @@ const ConnectFour = (props) => {
         if(playerOne && props.me===playerOne.name) setTurn(true)
         else setTurn(false)
     },[props.player, props.roomId, props.me])
+
+    useEffect(()=>{
+        if(props.status.type === 'Full'){
+            props.setIsConnectFour(false)
+            props.displayStatus(props.status)
+            props.setStatus({})
+        }
+    },[props.status])
+
+    useEffect(()=>{
+        setMyRoom(props.roomId)
+    })
 
     const play = (c) => {
         putChess({roomId: props.roomId, name: props.me, column: c})

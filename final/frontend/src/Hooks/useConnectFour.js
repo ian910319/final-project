@@ -6,32 +6,40 @@ const sendData = (data) => {
 const useConnectFour = () => {
   const [player, setPlayer] = useState([]);
   const [status, setStatus] = useState({});
-  const [roomId, setRoomId] = useState('')
-  const playConnectFour = (payload) => { sendData(["ConnectFour", payload]);}
+  const [roomId, setRoomId] = useState('');
+  const [me, setMe] = useState()
+  const playConnectFour = (payload) => { 
+    setMe(payload.player)
+    sendData(["ConnectFour", payload]);
+  }
   const leaveConnectFour = (payload) => { sendData(["LeaveConnectFour", payload])}
   
   client.onmessage = (byteString) => {
     const { data } = byteString;
-    const [task, payload] = JSON.parse(data); 
+    const [task, payload] = JSON.parse(data);
     switch (task) {
       case "Enter": {
-        setPlayer(() => [...player, ...payload])
-        if(roomId==='')
-          setRoomId(() => payload[0].roomId)
+        setPlayer(() => payload.list)
+        setRoomId(() => {
+          const temp = payload.list.filter((e)=>{
+            return e.name === me;
+          })
+          console.log(temp)
+          if(temp[0])
+            return temp[0].roomId;
+          else return ''
+        })
+        setStatus({type: 'Clear',
+        msg: 'You Entered the room.'})
         break;
       }
       case "status": {
-        setStatus(() => payload); 
+        if(payload.name===me)
+          setStatus(() => payload); 
         break;
       }
       case "Leave": {
-        const temp = player.filter((e)=>{
-          console.log(e)
-          console.log(payload)
-          return (e.name !== payload[0].name)
-        })
-        console.log(temp)
-        setPlayer(()=>temp)
+        setPlayer(() => payload.list)
         break;
       }
       default: 
@@ -43,9 +51,11 @@ const useConnectFour = () => {
     player,
     status,
     roomId,
+    setStatus,
     playConnectFour,
     leaveConnectFour
  };
 };
 
 export default useConnectFour;
+ 

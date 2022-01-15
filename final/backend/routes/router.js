@@ -23,7 +23,7 @@ const saveUser = async (name) => {
     }
     else{
       try {
-        const newUser = new User({ name, pictureURL: "error" });
+        const newUser = new User({ name, pictureURL: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRE95qPiotkOo4A7GdJm_bDsIZtT0BQxqmwTg&usqp=CAU" });
         //console.log("hi")
         photoURL = newUser.pictureURL
         return newUser.save();
