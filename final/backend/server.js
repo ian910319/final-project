@@ -211,14 +211,15 @@ wss.on('connection', (ws) => {
 
       case "leaveSixNimmtRoom": {
         const {roomname, me} = payload;
-        console.log("herer")
-        console.log(payload, roomname, me);
         const existRoom = await SixNimmtRoom.findOne({roomname: roomname});
-        console.log(payload);
-        const newPlayerList = existRoom.players.filter((item) => {return item !== me});
-        existRoom.players = newPlayerList;
-        await existRoom.save();
-        existRoom.players.map((item) => broadcastSingleNimmt(["someoneLeave", existRoom.players], item));
+        if (existRoom.length === 1) {
+          await SixNimmtRoom.deleteOne({roomname: roomname});
+        } else {
+          const newPlayerList = existRoom.players.filter((item) => {return item !== me});
+          existRoom.players = newPlayerList;
+          await existRoom.save();
+          existRoom.players.map((item) => broadcastSingleNimmt(["someoneLeave", existRoom.players], item));
+        }
         break ;
       }
 
@@ -368,4 +369,5 @@ wss.on('connection', (ws) => {
       default: break
     }
   }
+  ws.onclose = () => {console.log("cloes")}
 })
