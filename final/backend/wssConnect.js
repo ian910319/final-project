@@ -6,5 +6,5 @@ const sendStatus = (payload, ws) => {
     sendData(["status", payload], ws);
 }
 
-export { sendData, sendStatus}
+export { sendData, sendStatus }
   

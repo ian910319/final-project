@@ -35,6 +35,12 @@ function App() {
         case 'Full':
           message.error(content)
           break
+        case 'Old':
+          message.error(content)
+          break
+        case 'New':
+          message.success(content)
+          break
         default:
           break
     }}}
@@ -50,6 +56,7 @@ function App() {
       setSignedIn = {setSignedIn}
       setPhotoURL = {setPhotoURL}
       sendLogIn = {sendLogIn}
+      displayStatus={displayStatus}
     />
     : isConnectFour
     ? <ConnectFour

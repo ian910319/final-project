@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import "../../Containers/sixNimmt.css"
+import "./sixNimmt.css"
 
 const PlayerBackground = styled.div`
     width: 15%;

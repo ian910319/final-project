@@ -1,6 +1,6 @@
 import { Layout, Button, Menu } from "antd"
-import { useRef, useState } from "react"
-import "./sixNimmt.css"
+import { useRef } from "react"
+import "../Components/SixNimmt/sixNimmt.css"
 import Player from "../Components/SixNimmt/Player"
 
 const { Header, Content } = Layout;
@@ -145,7 +145,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                 </div>
                 </>) : 
                 <>
-                    <img id = "LobbyRoom" alt = "lobby_room" src={[require("./LOBBY_ROOM.png")]} width = "500" ></img>
+                    <img id = "LobbyRoom" alt = "lobby_room" src={[require("../Components/SixNimmt/LOBBY_ROOM.png")]} width = "500" ></img>
                     <br></br>
                 </>
                 }
