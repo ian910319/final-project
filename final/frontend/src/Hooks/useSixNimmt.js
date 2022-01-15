@@ -13,24 +13,28 @@ const useSixNimmt = () => {
   const [selfCards, setSelfCards] = useState([]);
   const [cards, setCards] = useState([[]]);
   const [players, setPlayers] = useState([]);
+  const [penaltyList, setPenaltyList] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [winner, setWinner] = useState();
+  const [chosenList, setChosenList] = useState([]);
+
 
   const addSixNimmtPlayer = (payload) => {
-    console.log("here1");
     sendData(["addSixNimmtPlayer", payload])  
   }
   
   const sendLicensingCard = (payload) => {
-    console.log("here2");
-    console.log(payload)
     sendData(["start", payload])                // start game
   }
 
   const sendCompare = (payload) => {
-    console.log("sendCompare:", payload);
     sendData(["compare", payload]);
   }
 
-  
+  const sendLogIn = (payload) => {
+    sendData(["login", payload]);
+  }
 
   client.onmessage = (byteString) => {
     const {data} = byteString;
@@ -38,14 +42,23 @@ const useSixNimmt = () => {
     switch (task) {
       case "playeradd": {
         const [players_name] = payload;
-        console.log(players_name);
-        setPlayers(players_name);
+        setPlayers(() => players_name);
         break ;
       }
+
+      case "givePhotos": {
+        setPhotos(() => payload);
+        break ;
+      }
+
+      case "chosenCardDisplay": {
+        setChosenList(() => payload);
+        break ;
+      }
+
       case "dispensecards": {
-      //console.log(typeof(payload));
-        const [cardsget, initialcards] = payload;
-        setSelfCards(cardsget);
+        const [cardsGet, initialcards] = payload;
+        setSelfCards(cardsGet);
         setCards(() => [
           [initialcards[0], null, null, null, null, null],
           [initialcards[1], null, null, null, null, null],
@@ -54,36 +67,59 @@ const useSixNimmt = () => {
         ]);
         break;
       }
+
       case "gamestarts" : {
-        const [players_name] = payload;
-        setPlayers([players_name])
+        const [pp] = payload
+        setPlayers(pp);
         setIsgamestart(true);
         break;
       }
-      case "judgefinish": {
-        console.log(payload);
-        const newboard = payload;
-        setCards(() => newboard);
-        break;
 
+      case "judgefinish": {
+        setCards(() => payload);
+        break;
       }
+
+      case "penaltyupdate": {
+        setPenaltyList(() => payload);
+        break ;
+      }
+
+      case "myhandupdate": {
+        setSelfCards(() => payload);
+        break ;
+      }
+
+      case "gameover": {
+        const [winner] = payload;
+        setWinner(winner);
+        setGameOver(true);
+        break ;
+      }
+
       default: break;
     }
  }
 
-
-    return {
-        sendLicensingCard,
-        setIsgamestart,
-        isgamestart,
-        selfCards,
-        cards,
-        sendCompare,
-        setPlayers,
-        players,
-        addSixNimmtPlayer,
-    }
-
+  return {
+    sendLicensingCard,
+    setIsgamestart,
+    isgamestart,
+    selfCards,
+    cards,
+    sendCompare,
+    setPlayers,
+    players,
+    addSixNimmtPlayer,
+    penaltyList,
+    gameOver,
+    setGameOver,
+    winner,
+    photos,
+    sendLogIn,
+    chosenList,
+    setChosenList, 
+  }
 };
 
 export default useSixNimmt;

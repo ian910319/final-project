@@ -18,9 +18,10 @@ function App() {
   const [photoURL, setPhotoURL] = useState('')
   const {player, status, roomId, setStatus, playConnectFour, leaveConnectFour} = useConnectFour()
   const { sendLicensingCard, isgamestart, setIsgamestart,
-          selfCards, cards, sendCompare, players, addSixNimmtPlayer } = useSixNimmt(setIsSixNimmt);
-
-
+          selfCards, cards, sendCompare, players, addSixNimmtPlayer,
+          penaltyList, gameOver, setGameOver, winner, photos, sendLogIn,
+          chosenList, setChosenList} = useSixNimmt(setIsSixNimmt);
+  
   const toggle = () => {
     const now = !collapsed
     setCollapsed(now)
@@ -48,6 +49,7 @@ function App() {
       setMe = {setMe} 
       setSignedIn = {setSignedIn}
       setPhotoURL = {setPhotoURL}
+      sendLogIn = {sendLogIn}
     />
     : isConnectFour
     ? <ConnectFour
@@ -71,6 +73,13 @@ function App() {
       cards = {cards}
       sendCompare = {sendCompare}
       players = {players}
+      penaltyList = {penaltyList}
+      gameOver = {gameOver}
+      setGameOver = {setGameOver}
+      winner = {winner}
+      photos = {photos}
+      chosenList = {chosenList}
+      setChosenList = {setChosenList}
     />
     : <GameBoard
       collapsed = {collapsed}

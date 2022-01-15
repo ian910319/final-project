@@ -1,63 +1,137 @@
 import { Layout, Button, Menu } from "antd"
 import { useRef, useState } from "react"
-import "../Components/SixNimmt/sixNimmt.css"
+import "./sixNimmt.css"
 import Player from "../Components/SixNimmt/Player"
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                    isgamestart, setIsgamestart, selfCards,
-                   cards, sendCompare, players}) => {
+                   cards, sendCompare, players, penaltyList,
+                   gameOver, setGameOver, winner, photos, 
+                   chosenList, setChosenList}) => {
     const chosencardRef = useRef(0);
-console.log(me, isgamestart)
     const roomname = "test";
- 
     const gamestart = async () => {
         console.log("sixnimmt game initialization starts");
         setIsgamestart(true);                                                       // game start
         console.log(players)
         if (players[0] === me) {                                                  // if I am the host
-            sendLicensingCard({room: roomname, number: players.length});
-            console.log(roomname);
-            //console.log(players)                                  // send license card req
+            sendLicensingCard({room: roomname, number: players.length, six_players: players});
+            console.log(roomname);                                                // send license card req
         }
-
-        /*for (var i = 0; i < 10; i++) {      // each person 出10次牌
-            sendCompare({player: me, card: chosencard, number: players.length, room: roomname});
-        }*/
     }
-    const handleonclick = async (item) => {
-            chosencardRef.current = item;
-            sendCompare({player: me, card: chosencardRef.current, number: players.length, room: roomname});
-        }
+    const handleonclick = async (item, index) => {
+        chosencardRef.current = item;
+        sendCompare({player: me, card: chosencardRef.current, number: players.length, room: roomname});
+        console.log(index);
+        setTimeout(function(){
+            document.getElementsByClassName('SingleCard_in_MyHand_clicked')[0].className = 'SingleCard_in_MyHand';
+        },50);       
+        setTimeout(function(){
+            document.getElementsByClassName('SingleCard_in_MyHand')[index].className = 'SingleCard_in_MyHand_clicked';
+        },80);
+    }
     
+    const restartGame = async () => {
+        setGameOver(false);
+        setIsgamestart(false);
+        setIsSixNimmt(true);
+        console.log(players)
+        if (players[0] === me) {                                                  // if I am the host
+            sendLicensingCard({room: roomname, number: players.length, six_players: players});
+        }
+    winner = "";
+    }
+    
+    const backToHome = () => {
+        setGameOver(false);
+        winner = "";
+        setIsSixNimmt(false);
+    }
+    const findcardcolor = (item) => {
+        var penalty = 0;
+        var Id ='';
+        if(item === null) Id = "Space";
+        else if (item % 10 === 0)  penalty += 3;
+        else if (item === 55)      penalty += 7;
+        else if (item % 11 === 0)  penalty += 5;
+        else if (item % 5 === 0)   penalty += 2;
+        else  penalty += 1;
+        if (penalty === 1)     Id = 'WhiteCard';
+        else if(penalty === 2) Id = 'BlueCard';
+        else if(penalty === 3) Id = 'YellowCard';
+        else if(penalty === 5) Id = 'RedCard';
+        else if(penalty === 7) Id = 'PurpleCard';
+        return Id;
+    }
+
     return (
         <Layout>
             <Header>
                 <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
                     SixNimmt!
+                    <div className="GoBack"> 
+                        {<Button onClick={() => setIsSixNimmt(false)}>
+                            Go Back!
+                        </Button>}
+                    </div>
                 </Menu>
             </Header>
 
             <Content>
-                {isgamestart ? (
+                {<div className = 'modal' style = {{ opacity: gameOver ? 1 : 0 }}>
+                <div className = 'modalWrapper'></div>
+                <div className = 'modalContent'>
+                    {winner === me ? <div className = 'modalResult'>YOU WIN</div> : <div className = 'modalResult'>Game Over</div>}
+                    <div className='modalBtnWrapper'>
+                        <div className = 'modalBtn' onClick = {() => restartGame()}>New Game</div>
+                        <div className = 'modalBtn' onClick = {() => backToHome()}>Back to Home</div>
+                    </div>
+                </div>
+                <div className = 'modalWrapper'></div>
+            </div>}
+
+            {isgamestart ? (
                 <>
+                <Button onClick={() => setGameOver(true)}>
+                    gameOver
+                </Button>
                 <div className="MyHand">
                     <h3>My hand:</h3>
                     <div className="Self">
-                        {selfCards.map((item) => {
-                            return <div className = "SingleCard" onClick = {() => handleonclick(item)}> {item} </div>
+                        {/*selfCards.map((item, index) => {
+                            return (<div className = "SingleCard_in_MyHand" id = "BlueCard" onClick = {() => handleonclick(item, index)}>
+                            <div className = "BlueCardNumber">{item}</div>
+                        </div>)
+                        })*/}
+                        {selfCards.map((item, index) => {
+                            var Id = findcardcolor(item);
+                            return (<div className = "SingleCard_in_MyHand" id = {Id} onClick = {() => handleonclick(item, index)}>
+                                <div className = {Id + 'Number'}>{item}</div>
+                            </div>)
                         })}
                     </div>
                 </div>
+                    
                 <div className="CardsArea">
                     {cards.map((singleRow, index1) => {
                         const Id = 'row'+index1.toString();
                         return (
                             <div className="CardsRow" key = {index1} id = {Id}>
-                                {singleRow.map((item) => {
+                                {/*singleRow.map((item) => {
                                     return (
-                                        <div className="SingleCard"> {item} </div>
+                                        <div className="SingleCard_in_CardsArea" id = "WhiteCard">
+                                            <div className = "WhiteCardNumber"> {item} </div>
+                                        </div>
+                                    )
+                                })*/}
+                                {singleRow.map((item) => {
+                                    var Id = findcardcolor(item);
+                                    return (
+                                        <div className="SingleCard_in_CardsArea" id = {Id}>
+                                            <div className = {Id + 'Number'}> {item} </div>
+                                        </div>
                                     )
                                 })}
                             </div>
@@ -66,18 +140,13 @@ console.log(me, isgamestart)
                 </div>
                 <div className="PlayerSeats">
                     {players.map((item, index1) => {
-                        return <Player name = {item} key = {index1}/>
+                        return <Player name = {item} key = {index1} penalty = {penaltyList[index1]} photo = {photos[index1]} chosenList = {chosenList[index1]} />
                     })}
                 </div>
                 </>) : 
                 <>
                     <img id = "LobbyRoom" alt = "lobby_room" src={[require("./LOBBY_ROOM.png")]} width = "500" ></img>
                     <br></br>
-                    <div className="GoBack"> 
-                        <Button onClick={() => setIsSixNimmt(false)}>
-                            Go Back!
-                        </Button>
-                    </div>
                 </>
                 }
             </Content>
@@ -102,11 +171,10 @@ console.log(me, isgamestart)
             </div>
             {isgamestart ? (
                 <></>):
-                <><div className="StartGame"> 
-                <Button onClick = {() => gamestart()}>START GAME </Button>
+                <><div className="StartGame">
+                {players[0] === me ? <Button onClick = {() => gamestart()}>START GAME </Button> : <></>}
                 </div></>
             }
-            {/*players[0] === me ? <button onClick = {() => gamestart()}></button> : <></>*/}
         </Layout>
     )
 }

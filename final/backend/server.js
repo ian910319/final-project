@@ -11,7 +11,6 @@ import {licensingcard, judgecards} from "./uitility/sixNimmt_utilities"
 import {checkForWin} from "./uitility/connectFour_utilities"
 import {SixNimmtRoom, PlayerInfo} from "./models/sixNimmt_mongo"
 
-
 dotenv.config();
 
 mongoose.connect(process.env.MONGO_URL, {
@@ -63,21 +62,39 @@ const broadcastMessage = (data, status) => {
   });
 };
 
-var i;
-var id = 0;
-var lookup = {};
+const broadcastSingleNimmt = (data, filter) => {
+  wss.clients.forEach((client) => {
+    //console.log(client.name)
+    //console.log("haha")
+    if (client.name === filter) {
+      //console.log("qqq");
+      //console.log(client)
+      sendData(data, client);
+      
+    }
+  });
+};
+
+var wsIndex = [];
 var comparecards = [];
 var connectFourPlayers = []
 ///////////////////////////////////////////////////////////////////
  
 wss.on('connection', (ws) => {
   ws.onmessage = async (byteString) => {
-    
-    ws.id = id++;
-    lookup[ws.id] = ws;
     const { data } = byteString
     const [task, payload] = JSON.parse(data)
+    
     switch (task) {
+      case "login": {
+        const { user } = payload;
+        ws.name = user;
+        //console.log(ws);
+        wsIndex.push({"user": user, "link": ws});
+        //console.log(wsIndex);
+        break;
+      }
+
       case 'ConnectFour': {
         const { roomId, player } = payload
         const existing = await ConnectFour.findOne({ roomId });
@@ -139,7 +156,7 @@ wss.on('connection', (ws) => {
               msg: `${player} entered the room ${roomId}`
             })
             console.log("newroom")
-            //console.log(newPayload)
+            
             return newConnectFour.save();
           } catch (e) { throw new Error("User creation error: " + e); }
         }
@@ -229,12 +246,16 @@ wss.on('connection', (ws) => {
 /////////////////////////////////////////////////////
       case "addSixNimmtPlayer": {
         const { room, user } = payload;
+        const exist = await PlayerInfo.findOne({user: user});
+        if (!exist) {
+          await new PlayerInfo({user: user, penalty: 0}).save();
+        }
         const existing = await SixNimmtRoom.findOne({roomname: room});
         if (existing) {
           const oldplayers = existing.players;
           //console.log(user);
           existing.players = [...oldplayers, user];
-          existing.save();
+          await existing.save();
           //console.log(existing.players)
           broadcastMessage(["playeradd", [existing.players]], {
             type: "success", msg: "Player added."
@@ -244,18 +265,32 @@ wss.on('connection', (ws) => {
       }
 
       case "start" : {
-        const { room, number } = payload;
+        const { room, number, six_players } = payload;
+        var photos = [];
+        for (var i = 0; i < six_players.length; i++) {                  // send players' picture
+          const uu = await User.findOne({name: six_players[i]});
+          photos[i] = uu.pictureURL;
+        }
+        broadcastMessage(["givePhotos", photos]);
         const allcards = licensingcard(number);                         // number is player number
         console.log(allcards);
         var ihatedebug = [];
-        await SixNimmtRoom.updateOne({"roomname": room}, {$set: {"allcards": allcards}})
+        await SixNimmtRoom.updateOne({"roomname": room}, {"allcards": allcards})
         for (var i = 0; i < 4; i++) ihatedebug[i] = [allcards[number * 10 + i], null, null, null, null, null];
-        await SixNimmtRoom.updateOne({"roomname": room}, {$set: {"cardboard": ihatedebug}})
-        for (i = 0; i < id; i++) {
-          var cardsget = allcards.slice(i * 10, i * 10 + 10);
+        await SixNimmtRoom.updateOne({"roomname": room}, {"cardboard": ihatedebug})
+        for (i = 0; i < number; i++) {
+          var cardsGet = allcards.slice(i * 10, i * 10 + 10);
+          await PlayerInfo.updateOne({user: six_players[i]}, {"cards": cardsGet})
           var initialcards = allcards.slice(allcards.length - 4, allcards.length);
-          const payload = [cardsget, initialcards];
-          sendData(["dispensecards", payload], lookup[i]);
+          const payload = [cardsGet, initialcards];
+          for (var j = 0; wsIndex[j].user !== six_players[i]; j++);
+          //console.log(wsIndex[j].user);
+          //console.log(wsIndex[j].link)
+          //console.log("hhhhhhhh");
+         // broadcastMessage(["dispensecards", payload])
+          broadcastSingleNimmt(["dispensecards", payload], six_players[i])
+          //sendData(["dispensecards", payload], wsIndex[j].link)
+          //wsIndex[j].link.send(JSON.stringify(["dispensecards", payload]))
         }
         const existing = await SixNimmtRoom.findOne({roomname: room});
         const players_name = existing.players;
@@ -265,15 +300,32 @@ wss.on('connection', (ws) => {
         })
         break;
       }
+
+
+
+
+
       case "compare" : {
         const {player, card, number, room} = payload;                             // number is player number
-        comparecards[comparecards.length] = {player, card}
-        if (comparecards.length === number) {                                          // get all chosen cards
+        for (var i = 0; i < comparecards.length && comparecards[i].player !== player; i++);
+        comparecards[i] = {player, card};
+
+        //***************** all player draw cards******************//
+        if (comparecards.length === number) {                                      // get all chosen cards
           var sorted = comparecards.sort(({card: a}, {card: b}) => a - b);        // sort in increasing order
-          var j = 0;
+          //console.log(comparecards)
           const existing = await SixNimmtRoom.findOne({roomname: room});
-          while (j !== number) {
-            var num = sorted[0].card;                                             // card number              
+
+          //******* put cards into rows*******/
+          var j = 0;
+          while (j !== sorted.length) {
+            var num = sorted[j].card;                                             // card number
+            var chosenCardDisplay = [];
+            for (var i = 0; i < existing.players.length; i++) {
+              for (var k = 0; k < comparecards.length && comparecards[k].player !== existing.players[i]; k++);
+              chosenCardDisplay[i] = comparecards[k].card;
+            }
+            broadcastMessage(["chosenCardDisplay", chosenCardDisplay]);
             if (existing) {                                                       // search which row to insert
               var tobecomp = [];
               for (var i = 0; i < 4; i++) {
@@ -289,35 +341,80 @@ wss.on('connection', (ws) => {
               }  
               if (min !== 101) {                                                   // can put in
                 var newrow = existing.cardboard[min_idx];
+                var newboard = existing.cardboard;
                 for (var i = 0; newrow[i] !== null; i++);
                 newrow[i] = num;
-                var newboard = existing.cardboard;
                 newboard[min_idx] = newrow;
                 await SixNimmtRoom.updateOne({roomname: room}, {$set: {"cardboard": newboard}})
+                console.log(newboard[min_idx])
                 if (newboard[min_idx][5] !== null)  {                                // check penalty or not
-                  const rowclear = existing.cardboard[min_idx];
+                  //const rowclear = existing.cardboard[min_idx];
+                  console.log("here");
                   var penalty = 0;
                   for (var i = 0; i < 5; i++) {
-                    if (rowclear[i] % 10 === 0)       penalty += 3;
-                    else if (rowclear[i] === 55)      penalty += 7;
-                    else if (rowclear[i] % 11 === 0)  penalty += 5;
-                    else if (rowclear[i] % 5 === 0)   penalty += 2;
+                    if (newrow[i] % 10 === 0)       penalty += 3;
+                    else if (newrow[i] === 55)      penalty += 7;
+                    else if (newrow[i] % 11 === 0)  penalty += 5;
+                    else if (newrow[i] % 5 === 0)   penalty += 2;
                     else                              penalty += 1;
                   }
+                  //console.log("dfdfd");
+                  const oldpenalty = await PlayerInfo.findOne({user: sorted[j].player}, {penalty: 1});
+                  //console.log(oldpenalty)
+                  await PlayerInfo.updateOne({user: sorted[j].player}, {penalty:oldpenalty.penalty + penalty});
+                  const playerList = existing.players;
+                  var penaltyList = [];
+                  for (var i = 0; i < playerList.length; i++) {                          // get new penalty list
+                    const temp = await PlayerInfo.findOne({user: playerList[i]}, {penalty: 1});
+                    penaltyList[i] = temp.penalty;
+                  }
+                  broadcastMessage(["penaltyupdate", penaltyList], {
+                    type: "success", msg: "Penalty updated."
+                  })
+                  newboard[min_idx] = [num, null, null, null, null, null];
+                  await SixNimmtRoom.updateOne({roomname: room}, {$set: {"cardboard": newboard}})
                 }
-                sorted.splice(0, 1);
-              }  
+                
+              } else { // the new card is too small to put, so renew first row
+                var newboard = existing.cardboard;
+                newboard[0] = [num, null, null, null, null, null];
+                //console.log(newboard);
+                await SixNimmtRoom.updateOne({roomname: room}, {"cardboard": newboard});
+              }
+              for (var i = 0; i < comparecards.length; i++) {                                                // renew everyone's cards
+                const cardsHave = await PlayerInfo.findOne({user: comparecards[i].player});
+                const newCardsHave = cardsHave.cards.filter((item) => {return item !== comparecards[i].card});
+                cardsHave.cards = newCardsHave;
+                await cardsHave.save();
+                broadcastSingleNimmt(["myhandupdate", newCardsHave], comparecards[i].player);                // send message to client to renew my hand
+              }
+
+
               j++;
             } else {throw new Error ("Roomname not exisst!")}
           }
           broadcastMessage(["judgefinish", existing.cardboard], {
             type: "success", msg: "Judge finfished."
           })
-          comparecards = [];
-        }
+          console.log(comparecards)
+          const havecards = await PlayerInfo.findOne({"user": comparecards[0].player})            
+          if (havecards.cards.length === 0) {                     // if no cards, game over
+            console.log("here");
+            //setTimeout(console.log("Hello!"), 10000);
+            const winner = await PlayerInfo.find().sort({penalty: 1}).limit(1);
+            broadcastMessage(["gameover", [winner.player]], {
+              type: "gameover", msg: "game finished"
+            })
+            await PlayerInfo.remove({});                                    // clear player information
+            //await SixNimmtRoom.findOneAndRemove({roomname: room});
+            await SixNimmtRoom.updateOne({roomname: room}, {player: []});
+
+          }
+          comparecards = [];// clear cards to be compare
+        }                                                    
         break;
       }
       default: break
     }
-  }    
+  }
 })

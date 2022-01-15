@@ -9,21 +9,24 @@ const Title = styled.div`
     justify-content: center;
   
     h1 {
+    color:bisque;
     margin: 0;
     margin-right: 20px;
-    font-size: 3em;
+    font-size: 5em;
 }`;
 
 const Wrapper = styled.div`
+  background-image: url(https://i.stack.imgur.com/p9mUO.jpg);
+  background-size: cover;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  width: 800px;
+  width: auto;
   margin: auto;
 `
-const SignIn = ({ me, setMe, setSignedIn, setPhotoURL }) => (
+const SignIn = ({ me, setMe, setSignedIn, setPhotoURL, sendLogIn, }) => (
   <Wrapper>
     <Title>
       <h1>The Entrance of Board Game World...</h1>
@@ -36,11 +39,8 @@ const SignIn = ({ me, setMe, setSignedIn, setPhotoURL }) => (
       size="large" style={{ width: 300, margin: 50}}
       onSearch={async() => {
         setSignedIn(true);
-        const {
-          data: { URL },
-        } = await axios.post('/api/create-user', {
-          me
-        });
+        const {data: { URL }} = await axios.post('/api/create-user', { me });
+        sendLogIn({user: me});
         console.log(URL)
         setPhotoURL(URL)
       }}
