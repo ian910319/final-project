@@ -63,9 +63,15 @@
           * 點選Back To Home回到遊戲列表
           * 點選Restart重新啟動遊戲進入Lobby Room，若原本的host沒有離開就會續任，反之則由第二位輪替
   *注意事項：我們預設大家都是好玩家，因此不要在遊戲進行中，突然直接關閉整個頁面，如要關閉頁面，請使用go back或是back to home等按鍵回到遊戲列表後才能關閉
+## 使用與參考之框架/模組/原始碼：我們當初就是看到board game arena這個網站(https://boardgamearena.com/)，覺得有一個讓大家可以免費上去玩桌遊的平台很讚，所以才決定做這個的，不過因為時間有限沒辦法產出很多桌遊
+## 使用之第三方套件、框架、程式碼：
+  * 前端：React Hook, react-router-dom
+  * 後端：Node.js, websocket, bcrypt, cors, express, dotenv, nodemon
+  * 資料庫：MongoDB
+  * 第三方套件：Ant Design
 ## Contribution
-  * 電機二江承恩 B09901099: gameboard主畫面前端與後端、四子棋前後端、整合、deploy
+  * 電機二江承恩 B09901099: gameboard主畫面前端與後端、四子棋前後端、帳密、整合
   * 電機二陳品睿 B09901194: 誰是牛頭王後端
-  * 電機二蘇絹淇 B09901199: 誰是牛頭王前端、deploy
+  * 電機二蘇絹淇 B09901199: 誰是牛頭王前端
 
 
