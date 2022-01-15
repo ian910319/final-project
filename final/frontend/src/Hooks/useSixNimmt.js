@@ -18,7 +18,18 @@ const useSixNimmt = () => {
   const [gameOver, setGameOver] = useState(false);
   const [winner, setWinner] = useState();
   const [chosenList, setChosenList] = useState([]);
+  const [roomname, setRoomname] = useState();
+  const [isSixNimmt, setIsSixNimmt] = useState(false);
 
+  const sendCheckSixNimmtRoom = (payload) => {
+    //console.log(payload)
+    sendData(["checkSixNimmtRoom", payload])
+  }
+
+  const sendLeaveRoom = (payload) => {
+    console.log(payload);
+    sendData("leaveSixNimmtRoom", payload);
+  }
 
   const addSixNimmtPlayer = (payload) => {
     sendData(["addSixNimmtPlayer", payload])  
@@ -40,9 +51,30 @@ const useSixNimmt = () => {
     const {data} = byteString;
     const [task, payload] = JSON.parse(data);
     switch (task) {
+      case "newSixNimmtRoom": {
+        const {roomname, me} = payload;
+        setRoomname(() => roomname);
+        setPlayers(() => [me]);
+        setIsSixNimmt(() => true);
+        break ;
+      }
+
+      case "sixNimmtRoomFull": {
+        alert("Room is full, please search for other rooms or create a new one.");
+        break ;
+      }
+
+      case "sixNimmtRoomPlaying": {
+        alert("Room is playing, please wait or search others.");
+        break ;
+      }
+
+      case "sixNimmtRoomLobby": {
+        break ;
+      }
+
       case "playeradd": {
-        const [players_name] = payload;
-        setPlayers(() => players_name);
+        setPlayers(() => payload);
         break ;
       }
 
@@ -65,19 +97,18 @@ const useSixNimmt = () => {
           [initialcards[2], null, null, null, null, null],
           [initialcards[3], null, null, null, null, null],
         ]);
-        break;
+        break ;
       }
 
       case "gamestarts" : {
-        const [pp] = payload
-        setPlayers(pp);
+        setPlayers(payload);             // players
         setIsgamestart(true);
-        break;
+        break ;
       }
 
       case "judgefinish": {
         setCards(() => payload);
-        break;
+        break ;
       }
 
       case "penaltyupdate": {
@@ -91,13 +122,12 @@ const useSixNimmt = () => {
       }
 
       case "gameover": {
-        const [winner] = payload;
-        setWinner(winner);
+        setWinner(() => payload);
         setGameOver(true);
         break ;
       }
 
-      default: break;
+      default: break ;
     }
  }
 
@@ -119,6 +149,12 @@ const useSixNimmt = () => {
     sendLogIn,
     chosenList,
     setChosenList, 
+    sendCheckSixNimmtRoom,
+    roomname,
+    setIsSixNimmt,
+    isSixNimmt,
+    sendLeaveRoom,
+
   }
 };
 

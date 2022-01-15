@@ -1,5 +1,5 @@
 import { Layout, Button, Menu } from "antd"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import "./sixNimmt.css"
 import Player from "../Components/SixNimmt/Player"
 
@@ -9,9 +9,9 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                    isgamestart, setIsgamestart, selfCards,
                    cards, sendCompare, players, penaltyList,
                    gameOver, setGameOver, winner, photos, 
-                   chosenList, setChosenList}) => {
+                   chosenList, roomname, sendLeaveRoom}) => {
     const chosencardRef = useRef(0);
-    const roomname = "test";
+    //const roomname = "test";
     const gamestart = async () => {
         console.log("sixnimmt game initialization starts");
         setIsgamestart(true);                                                       // game start
@@ -31,6 +31,12 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
         setTimeout(function(){
             document.getElementsByClassName('SingleCard_in_MyHand')[index].className = 'SingleCard_in_MyHand_clicked';
         },80);
+    }
+    
+    const handleGoBack = () => {
+        setIsSixNimmt(false);
+        setIsgamestart(false);
+        sendLeaveRoom(roomname, me);
     }
     
     const restartGame = async () => {
@@ -69,10 +75,10 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
     return (
         <Layout>
             <Header>
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+                <Menu theme="dark" mode="horizontal" >
                     SixNimmt!
                     <div className="GoBack"> 
-                        {<Button onClick={() => setIsSixNimmt(false)}>
+                        {<Button onClick={() => handleGoBack()}>
                             Go Back!
                         </Button>}
                     </div>
@@ -80,17 +86,22 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
             </Header>
 
             <Content>
-                {<div className = 'modal' style = {{ opacity: gameOver ? 1 : 0 }}>
-                <div className = 'modalWrapper'></div>
-                <div className = 'modalContent'>
-                    {winner === me ? <div className = 'modalResult'>YOU WIN</div> : <div className = 'modalResult'>Game Over</div>}
-                    <div className='modalBtnWrapper'>
-                        <div className = 'modalBtn' onClick = {() => restartGame()}>New Game</div>
-                        <div className = 'modalBtn' onClick = {() => backToHome()}>Back to Home</div>
+                <>
+                {gameOver ? 
+                    <div className = 'modal'>
+                        <div className = 'modalWrapper'>
+                            <div className = 'modalContent'>
+                                {winner === me ? <div className = 'modalResult'>YOU WIN</div> : <div className = 'modalResult'>Game Over</div>}
+                                <div className='modalBtnWrapper'>
+                                    <div className = 'modalBtn' onClick = {() => restartGame()}>New Game</div>
+                                    <div className = 'modalBtn' onClick = {() => backToHome()}>Back to Home</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className = 'modalWrapper'></div>
-            </div>}
+                : <> </>
+                }
+                </>
 
             {isgamestart ? (
                 <>
@@ -146,6 +157,10 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                 </>) : 
                 <>
                     <img id = "LobbyRoom" alt = "lobby_room" src={[require("./LOBBY_ROOM.png")]} width = "500" ></img>
+                    {players.map((item, index) => {
+                            return (<div className="PlayersBoard"><h2>player {index + 1} {item}</h2></div>
+                            )
+                    })}
                     <br></br>
                 </>
                 }
@@ -172,7 +187,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
             {isgamestart ? (
                 <></>):
                 <><div className="StartGame">
-                {players[0] === me ? <Button onClick = {() => gamestart()}>START GAME </Button> : <></>}
+                {players[0] === me ? <Button onClick = {() => {console.log("DAFD");gamestart() }}>START GAME </Button> : <></>}
                 </div></>
             }
         </Layout>

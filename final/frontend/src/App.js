@@ -1,6 +1,5 @@
 import "./App.css"
-import { useState, useEffect } from 'react';
-import { message } from 'antd'
+import { useState } from 'react';
 import SignIn from "./Containers/SignIn";
 import GameBoard from './Containers/GameBoard'
 import ConnectFour from "./Containers/ConnectFour";
@@ -14,13 +13,14 @@ function App() {
   const [isConnectFour, setIsConnectFour] = useState(false)
   const [signedIn, setSignedIn] = useState(false)
   const [me, setMe] = useState('')
-  const [isSixNimmt, setIsSixNimmt] = useState(false)
+  
   const [photoURL, setPhotoURL] = useState('')
   const {player, status, roomId, playConnectFour, leaveConnectFour} = useConnectFour()
   const { sendLicensingCard, isgamestart, setIsgamestart,
           selfCards, cards, sendCompare, players, addSixNimmtPlayer,
           penaltyList, gameOver, setGameOver, winner, photos, sendLogIn,
-          chosenList, setChosenList} = useSixNimmt(setIsSixNimmt);
+          chosenList, sendCheckSixNimmtRoom, roomname, setIsSixNimmt,
+          isSixNimmt, sendLeaveRoom} = useSixNimmt();
   
   const toggle = () => {
     const now = !collapsed
@@ -62,7 +62,9 @@ function App() {
       winner = {winner}
       photos = {photos}
       chosenList = {chosenList}
-      setChosenList = {setChosenList}
+      roomname = {roomname}
+      sendCheckSixNimmtRoom = {sendCheckSixNimmtRoom}
+      sendLeaveRoom = {sendLeaveRoom}
     />
     : <GameBoard
       collapsed = {collapsed}
@@ -75,6 +77,7 @@ function App() {
       playConnectFour = {playConnectFour}
       players = {players}
       addSixNimmtPlayer = {addSixNimmtPlayer}
+      sendCheckSixNimmtRoom = {sendCheckSixNimmtRoom}
     />
     
     }
