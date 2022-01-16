@@ -1,6 +1,6 @@
 import { Layout, Button, Menu, Modal, Input } from "antd"
 import { useRef, useState } from "react"
-import Player from "../Components/SixNimmt/Player"
+import Player from "../Components/SixNimmt/Player.js"
 import "../Components/SixNimmt/sixNimmt.css"
 
 const { Header, Content } = Layout;
