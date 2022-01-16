@@ -6,7 +6,7 @@ import GameBoard from './Containers/GameBoard.js'
 import ConnectFour from "./Containers/ConnectFour.js";
 import SixNimmt from "./Containers/SixNimmt.js";
 import useConnectFour from "./Hooks/useConnectFour.js";
-import useSixNimmt from "./Hooks/useSixNimmt.jss";
+import useSixNimmt from "./Hooks/useSixNimmt.js";
 
 function App() {
 
