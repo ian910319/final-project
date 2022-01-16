@@ -1,5 +1,5 @@
 import { useState } from "react";
-const client = new WebSocket('ws://localhost:4000')
+const client = new WebSocket('ws://localhost:5000')
 const sendData = (data) => {
   client.send(JSON.stringify(data));
 };
