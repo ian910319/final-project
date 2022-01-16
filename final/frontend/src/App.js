@@ -20,7 +20,7 @@ function App() {
           selfCards, cards, sendCompare, players, addSixNimmtPlayer,
           penaltyList, gameOver, setGameOver, winner, photos, sendLogIn,
           chosenList, sendCheckSixNimmtRoom, roomname, setIsSixNimmt,
-          isSixNimmt, sendLeaveRoom, setChooseRowMode, chooseRowMode} = useSixNimmt();
+          isSixNimmt, sendLeaveRoom, setChosenList} = useSixNimmt();
   
   const toggle = () => {
     const now = !collapsed
@@ -65,8 +65,7 @@ function App() {
       roomname = {roomname}
       sendCheckSixNimmtRoom = {sendCheckSixNimmtRoom}
       sendLeaveRoom = {sendLeaveRoom}
-      setChooseRowMode = {setChooseRowMode}
-      chooseRowMode = {chooseRowMode}
+      setChosenList = {setChosenList}
     />
     : <GameBoard
       collapsed = {collapsed}
@@ -80,8 +79,7 @@ function App() {
       players = {players}
       addSixNimmtPlayer = {addSixNimmtPlayer}
       sendCheckSixNimmtRoom = {sendCheckSixNimmtRoom}
-    />
-    
+    />  
     }
     </>
   );

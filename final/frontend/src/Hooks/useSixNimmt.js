@@ -20,7 +20,6 @@ const useSixNimmt = () => {
   const [chosenList, setChosenList] = useState([]);
   const [roomname, setRoomname] = useState();
   const [isSixNimmt, setIsSixNimmt] = useState(false);
-  const [chooseRowMode, setChooseRowMode] = useState(false);
 
   const sendCheckSixNimmtRoom = (payload) => {
     //console.log(payload)
@@ -46,10 +45,6 @@ const useSixNimmt = () => {
 
   const sendLogIn = (payload) => {
     sendData(["login", payload]);
-  }
-
-  const sendChosenRow = (payload) => {
-    sendData(["chosenRow", payload]);
   }
 
   client.onmessage = async (byteString) => {
@@ -98,7 +93,9 @@ const useSixNimmt = () => {
       }
 
       case "chosenCardDisplay": {
+        console.log(`record: ${payload}`);
         setChosenList(() => payload);
+        
         break ;
       }
 
@@ -142,14 +139,6 @@ const useSixNimmt = () => {
         break ;
       }
 
-      case "chooseRowToReplace": {
-        setChooseRowMode(true);
-        const chosenRow = prompt();
-        console.log(chosenRow)
-        sendChosenRow({chosenRow, roomname});
-        break ;
-      }
-
       default: break ;
     }
  }
@@ -177,8 +166,6 @@ const useSixNimmt = () => {
     setIsSixNimmt,
     isSixNimmt,
     sendLeaveRoom,
-    setChooseRowMode,
-    chooseRowMode,
   }
 };
 

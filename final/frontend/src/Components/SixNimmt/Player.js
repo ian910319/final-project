@@ -16,6 +16,7 @@ const Player = ({name, penalty, photo, chosenList}) => {
             <p> penalty {penalty}</p>
             
             <div alt = " " src = {[require("./backside.png")]} width = "80" height = "auto">{chosenList}</div>
+            <div></div>
         </PlayerBackground>
 
 
