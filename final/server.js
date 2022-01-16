@@ -49,7 +49,6 @@ app.listen(port, () =>
 );
 
 const server = http.createServer(app);
-server.listen(4000, () => console.log("Listening.. on 4000"))
 
 const wss = new WebSocketServer({
   server
