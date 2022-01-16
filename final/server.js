@@ -443,5 +443,5 @@ wss.on('connection', (ws) => {
       default: break
     }
   }
-  ws.onclose = () => {console.log("cloes")}
+  ws.onclose = () => {}
 })
