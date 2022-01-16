@@ -86,6 +86,9 @@ h3 {
     float: left;
 }
 
+#BackSide {
+    background-image: url(backside.png);
+}
 
 #WhiteCard {
     background-image: url(whitecard.png);

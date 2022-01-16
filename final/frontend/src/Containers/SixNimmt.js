@@ -65,7 +65,8 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
     const findcardcolor = (item) => {
         var penalty = 0;
         var Id ='';
-        if(item === null) Id = "Space";
+        if(item === null || 0) Id = "Space";
+        else if(item === 105) Id = "BackSide";
         else if (item % 10 === 0)  penalty += 3;
         else if (item === 55)      penalty += 7;
         else if (item % 11 === 0)  penalty += 5;
@@ -119,7 +120,7 @@ const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                         document.getElementsByClassName('SingleCard_in_MyHand_clicked')[0].className = 'SingleCard_in_MyHand';
                     }}
                     onOk = {() => {
-                        if (temp !== 1 && temp !== 2 && temp !== 3 && temp !== 4)
+                        if (!(temp == 1 || temp == 2 || temp == 3 || temp == 4))
                             alert("Please enter 1 or 2 or 3 or 4");
                         setChooseRowMode(false);
                         sendCompare({player: me, card: chosencardRef.current, number: players.length, room: roomname, row: temp});
