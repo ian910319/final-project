@@ -484,5 +484,4 @@ wss.on('connection', (ws) => {
       default: break ;
       }
   }
-  ws.onclose = () => {}
 })
