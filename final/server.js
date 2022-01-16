@@ -456,8 +456,8 @@ wss.on('connection', (ws) => {
           if (havecards.cards.length === 0) {                     // if no cards, game over
             var winner = await PlayerInfo.findOne().sort({penalty: 1}).limit(1);
             console.log(winner);
-            existRoom.status = false;
-            existRoom.save();
+            await SixNimmtRoom.updateOne({roomname: room}, {status: false});
+            //existRoom.save();
             existRoom.players.map((item) => broadcastSingleNimmt(["gameover", winner.user], item));
           }
           for (var i = 0; i < 100000000; i++);
