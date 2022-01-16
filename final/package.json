@@ -8,6 +8,7 @@
     "server": "cd backend && yarn server"
   },
   "dependencies": {
+    "create-react-app": "^5.0.0",
     "ws": "^8.4.0"
   }
 }

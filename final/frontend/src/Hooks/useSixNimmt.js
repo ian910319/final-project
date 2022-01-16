@@ -20,6 +20,7 @@ const useSixNimmt = () => {
   const [chosenList, setChosenList] = useState([]);
   const [roomname, setRoomname] = useState();
   const [isSixNimmt, setIsSixNimmt] = useState(false);
+  const [chooseRowMode, setChooseRowMode] = useState(false);
 
   const sendCheckSixNimmtRoom = (payload) => {
     //console.log(payload)
@@ -47,7 +48,11 @@ const useSixNimmt = () => {
     sendData(["login", payload]);
   }
 
-  client.onmessage = (byteString) => {
+  const sendChosenRow = (payload) => {
+    sendData(["chosenRow", payload]);
+  }
+
+  client.onmessage = async (byteString) => {
     const {data} = byteString;
     const [task, payload] = JSON.parse(data);
     switch (task) {
@@ -137,6 +142,14 @@ const useSixNimmt = () => {
         break ;
       }
 
+      case "chooseRowToReplace": {
+        setChooseRowMode(true);
+        const chosenRow = prompt();
+        console.log(chosenRow)
+        sendChosenRow({chosenRow, roomname});
+        break ;
+      }
+
       default: break ;
     }
  }
@@ -164,6 +177,8 @@ const useSixNimmt = () => {
     setIsSixNimmt,
     isSixNimmt,
     sendLeaveRoom,
+    setChooseRowMode,
+    chooseRowMode,
   }
 };
 

@@ -8,8 +8,9 @@ const { Header, Content } = Layout;
 const SixNimmt = ({setIsSixNimmt, me, sendLicensingCard,
                    isgamestart, setIsgamestart, selfCards,
                    cards, sendCompare, players, penaltyList,
-                   gameOver, setGameOver, winner, photos, 
-                   chosenList, roomname, sendLeaveRoom,}) => {
+                   gameOver, setGameOver, chooseRowMode, photos,
+                   chosenList, roomname, sendLeaveRoom, winner,
+                   setChooseRowMode, }) => {
     const chosencardRef = useRef(0);
     //const roomname = "test";
     const gamestart = async () => {
