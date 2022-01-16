@@ -1,8 +1,8 @@
 import "./App.css"
 import { useState, useEffect } from 'react';
 import { message } from "antd";
-import SignIn from "./Containers/SignIn.js";
-import GameBoard from './Containers/GameBoard.js'
+import SignIn from "./Containers/SignIn.js.js.js";
+import GameBoard from './Containers/GameBoard.js.js.js'
 import ConnectFour from "./Containers/ConnectFour.js";
 import SixNimmt from "./Containers/SixNimmt.js";
 import useConnectFour from "./Hooks/useConnectFour.js";

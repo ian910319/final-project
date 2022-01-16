@@ -1,6 +1,6 @@
 import {useState} from "react";
 
-const client = new WebSocket('ws://localhost:5000')
+const client = new WebSocket('ws://localhost:4000')
 
 const sendData = async (data) => {
   await client.send(
