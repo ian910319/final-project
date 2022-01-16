@@ -1,11 +1,28 @@
 .title {
     font-family: Comic Sans MS;
     color: rgb(237, 255, 208);
-    font-size: 35px;
 }
+
+@media screen  and  (max-width: 900px) {
+    .title {
+        font-size: 30px;
+    }
+    .site-layout-background {
+        height: 100px;
+    }
+}
+
+@media screen and (min-width: 900px) and  (max-width: 2000px) {
+    .title {
+        font-size: 35px;
+    }
+    .site-layout-background {
+        height: 70px;
+    }
+}
+
 .site-layout-background {
     position: 'fixed';
-    height: 70px;
     width: '100%';
     background: linear-gradient(to right, rgb(243, 164, 74), rgb(252, 168, 12));
 }

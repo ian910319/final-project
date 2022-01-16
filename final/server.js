@@ -93,7 +93,6 @@ var wsIndex = [];
 var comparecards = [];
 var connectFourPlayers = []
 ///////////////////////////////////////////////////////////////////
- 
 wss.on('connection', (ws) => {
   ws.onmessage = async (byteString) => {
     const { data } = byteString
@@ -103,9 +102,7 @@ wss.on('connection', (ws) => {
       case "login": {
         const { user } = payload;
         ws.name = user;
-        //console.log(ws);
         wsIndex.push({"user": user, "link": ws});
-        //console.log(wsIndex);
         break;
       }
 
@@ -258,15 +255,13 @@ wss.on('connection', (ws) => {
 
 /************************************ below are for six nimmt **********************************/
       case "checkSixNimmtRoom": {
-        console.log(payload)
         const {roomname, me} = payload;
-        console.log(roomname, me);
         const existRoom = await SixNimmtRoom.findOne({roomname: roomname});
         if (!existRoom) {
-          //console.log("here");
           await new SixNimmtRoom({roomname: roomname, players: [me]}).save();
-          await new PlayerInfo({user: me, penalty: 0}).save();
-          //console.log(me)
+          const pp = await PlayerInfo.findOne({user: me});
+          if (!pp) await PlayerInfo({user: me, penalty: 0}).save();
+          else     await PlayerInfo.updateOne({user: me}, {penalty: 0});
           sendData(["newSixNimmtRoom", {roomname, me}], ws);
 
         } else {
@@ -281,7 +276,6 @@ wss.on('connection', (ws) => {
             sendData(["sixNimmtRoomLobby", roomname], ws);
             existRoom.players.map((item) => {
               {broadcastSingleNimmt(["playeradd", existRoom.players], item)}
-              console.log(item, existRoom.players);
             });
           }
         }
@@ -305,9 +299,10 @@ wss.on('connection', (ws) => {
       case "addSixNimmtPlayer": {
         const { room, user } = payload;
         const exist = await PlayerInfo.findOne({user: user});
+        console.log(exist);
         if (!exist) {
           await new PlayerInfo({user: user, penalty: 0}).save();
-        } else {throw new Error ("Player already exists!")}
+        } else {PlayerInfo.updateOne({user: user}, {penalty: 0});}
         const existRoom = await SixNimmtRoom.findOne({roomname: room});
         if (existRoom) {
           const oldplayers = existRoom.players;
@@ -327,11 +322,16 @@ wss.on('connection', (ws) => {
         for (var i = 0; i < existRoom.players.length; i++) {                  // send players' picture
           const uu = await User.findOne({name: existRoom.players[i]});
           photos[i] = uu.pictureURL;
-          PlayerInfo.updateOne({user: existRoom.players[i]}, {penalty: 0});
+          await PlayerInfo.updateOne({user: existRoom.players[i]}, {$set: {penalty: 0}});
         }
+        var penaltyList = [];
+        for (var i = 0; i < existRoom.players.length; i++) {
+          var temp = await PlayerInfo.findOne({user: existRoom.players[i]})
+          penaltyList[i] = temp.penalty;
+        }
+        existRoom.players.map((item) => {broadcastSingleNimmt(["penaltyupdate", penaltyList], item)});
         existRoom.status = true;
         await existRoom.save();
-        //existRoom.players.map((item) => broadcastSingleNimmt(["givePhotos", photos], item));
         const allcards = licensingcard(number);                         // number is player number
         console.log(allcards);
         await SixNimmtRoom.updateOne({"roomname": room}, {"allcards": allcards})
@@ -354,19 +354,20 @@ wss.on('connection', (ws) => {
       }
 
       case "compare" : {
-        const {player, card, number, room} = payload;                             // number is player number
+        const {player, card, number, room, row} = payload;                             // number is player number
         var p = 0;
         for ( ; p < comparecards.length && comparecards[p].player !== player; p++);
-        comparecards[p] = {player, card};
+        comparecards[p] = {player, card, row};
         //***************** all player draw cards******************//
         if (comparecards.length === number) {                                      // get all chosen cards
           var sorted = comparecards.sort(({card: a}, {card: b}) => a - b);        // sort in increasing order
-          //console.log(comparecards)
+          console.log(comparecards)
           const existRoom = await SixNimmtRoom.findOne({roomname: room});
 
           //******* put cards into rows*******/
           var j = 0;
-          while (j !== sorted.length) {
+          var flag = 0;
+          while (j !== sorted.length && !flag) {
             var num = sorted[j].card;                                             // card number
             var chosenCardDisplay = [];
             for (var i = 0; i < existRoom.players.length; i++) {
@@ -378,7 +379,7 @@ wss.on('connection', (ws) => {
               var tobecomp = [];
               for (var i = 0; i < 4; i++) {
                 for (var k = 0; existRoom.cardboard[i][k] !== null; k++);
-                tobecomp[i] = existRoom.cardboard[i][k - 1];   // get the four last cards
+                tobecomp[i] = existRoom.cardboard[i][k - 1];                       // get the four last cards
               }
               var min = 101, min_idx;                                              // compare where to put
               for (var i = 0; i < 4; i++) {
@@ -415,11 +416,28 @@ wss.on('connection', (ws) => {
                   newboard[min_idx] = [num, null, null, null, null, null];
                   await SixNimmtRoom.updateOne({roomname: room}, {$set: {"cardboard": newboard}})
                 }
-                
-              } else { // the new card is too small to put, so renew first row
-                var newboard = existRoom.cardboard;
-                newboard[0] = [num, null, null, null, null, null];
-                await SixNimmtRoom.updateOne({roomname: room}, {"cardboard": newboard});
+              } else {
+                const row_Idx = parseInt(comparecards[j].row);
+                var oldrow = existRoom.cardboard[row_Idx - 1];
+                console.log(oldrow);
+                var penaltyList = [];
+                var penalty = 0;
+                for (var i = 0; i < 5 && oldrow[i] !== null; i++) {
+                  if (oldrow[i] % 10 === 0)       penalty += 3;
+                  else if (oldrow[i] === 55)      penalty += 7;
+                  else if (oldrow[i] % 11 === 0)  penalty += 5;
+                  else if (oldrow[i] % 5 === 0)   penalty += 2;
+                  else                              penalty += 1;
+                }
+                const oldpenalty = await PlayerInfo.findOne({user: sorted[j].player}, {penalty: 1});
+                await PlayerInfo.updateOne({user: sorted[j].player}, {penalty: oldpenalty.penalty + penalty});
+                for (var i = 0; i < existRoom.players.length; i++) {
+                  var temp = await PlayerInfo.findOne({user: existRoom.players[i]});
+                  penaltyList[i] = temp.penalty;
+                }
+                existRoom.players.map((item) => {broadcastSingleNimmt(["penaltyupdate", penaltyList], item)});
+                existRoom.cardboard[row_Idx - 1] = [num, null, null, null, null, null];                         // the new card is too small to put, so renew first row
+                existRoom.save();
               }
               for (var i = 0; i < comparecards.length; i++) {                                                // renew everyone's cards
                 const cardsHave = await PlayerInfo.findOne({user: comparecards[i].player});
@@ -430,23 +448,41 @@ wss.on('connection', (ws) => {
               }
               j++;
             } else {throw new Error ("Roomname not exisst!")}
-          }
+            existRoom.players.map((item) => broadcastSingleNimmt(["judgefinish", existRoom.cardboard], item));
+            for (var i = 0; i < 100000000; i++);
+          } 
           existRoom.players.map((item) => broadcastSingleNimmt(["judgefinish", existRoom.cardboard], item))
           const havecards = await PlayerInfo.findOne({"user": comparecards[0].player})            
           if (havecards.cards.length === 0) {                     // if no cards, game over
-            //console.log("here");
-            const winner = await PlayerInfo.findOne().sort({penalty: 1}).limit(1);
-            console.log(winner.user);
+            var winner = await PlayerInfo.findOne().sort({penalty: 1}).limit(1);
+            console.log(winner);
             existRoom.status = false;
+            existRoom.save();
             existRoom.players.map((item) => broadcastSingleNimmt(["gameover", winner.user], item));
           }
+          for (var i = 0; i < 100000000; i++);
+          for (var i = 0; i < 100000000; i++);
+          var ttt = [];
+          for (var i = 0; i < existRoom.players.length; i++)
+            ttt[i]  = 0;
+          existRoom.players.map((item) => broadcastSingleNimmt(["chosenCardDisplay", ttt], item));
           comparecards = [];// clear cards to be compare
-        } else                                               
+
+        } else {
+          var current = [];
+          const existRoom = await SixNimmtRoom.findOne({roomname: room});
+          existRoom.players.map((item, index1) => {
+            var k;
+            for (k = 0; k < comparecards.length && comparecards[k].player !== item; k++);
+            if (k !== comparecards.length)  current[index1] = 105;
+            else                            current[index1] = 0;
+          })
+          existRoom.players.map((item) => {broadcastSingleNimmt(["chosenCardDisplay", current], item)});
+        }                                     
         break ;
       }
-
-      default: break
-    }
+      default: break ;
+      }
   }
   ws.onclose = () => {}
 })

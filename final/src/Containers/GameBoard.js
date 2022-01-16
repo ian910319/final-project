@@ -92,7 +92,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     <Col span={8}>
                       <Card
                       hoverable
-                      style={{ width: 240 } }
+                      style={{ width: "75%"} }
                       cover={<img alt="example" src="https://m.media-amazon.com/images/I/81fEiLrmZ8L._AC_SL1500_.jpg" />}
                       onClick={() => setConnectFourVisible(true)}
                       >
@@ -114,7 +114,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     <Col span={8}>
                       <Card
                       hoverable
-                      style={{ width: 240 }}
+                      style={{ width: "75%" }}
                       cover={<img alt="example" src="https://play-lh.googleusercontent.com/p11kV_h4I96S7LT-c_oZAs278HzGISfib30JvMVFzN7FzUCJfU9JnX8dzC5VMUy1cs8" />}
                       >
                         <Meta title="MineSweeper" description="Easy and fun. Recommended to beginners. " />
@@ -123,7 +123,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     <Col span={8}>
                     <Card
                       hoverable
-                      style={{ width: 240 }}
+                      style={{ width: "75%" }}
                       cover={<img alt="example" src="https://www.gamesworld.com.au/wp-content/uploads/2020/04/6nimmt.jpg" />}
                       onClick={() => setSixNimmtVisible(true)}
                       >
@@ -143,7 +143,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     <Col span={8}>
                       <Card
                       hoverable
-                      style={{ width: 240 }}
+                      style={{ width: "75%" }}
                       cover={<img alt="example" src="https://play-lh.googleusercontent.com/Fb5Q1xM1X8HGSk0jcl_mjQdw5jKCL29g-2rzThfhii9De9-5lwrdjCsnFrgtTJ6OGJmH" />}
                       >
                         <Meta title="Hanafuda" description="Easy and fun. Recommended to beginners. " />

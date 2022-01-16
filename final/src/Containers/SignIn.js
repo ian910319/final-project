@@ -4,7 +4,7 @@ import styled from "styled-components"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { useState, useEffect } from "react";
 import axios from '../api'; 
-import Modal from '../Components/SignIn/SignInModal.js'
+import Modal from '../Components/SignIn/SignInModal'
 import { trim } from 'lodash'
 
 const Title = styled.div`
