@@ -1,5 +1,9 @@
 @import '~antd/dist/antd.css';
 
+*{
+  font-family:Comic Sans MS;
+}
+
 .logo {
   display: flex;
   flex-direction: column;
@@ -35,16 +39,11 @@
 #components-layout-demo-custom-trigger .logo {
   height: 32px;
   margin: 16px;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(245, 155, 103, 0.3);
 }
 
-.site-layout .site-layout-background {
+.site-layout {
   background: #fff;
-  position: relative; 
-}
-
-/* not necessarily needed */
-.site-layout-background {
-  background: #fff;
-  position: relative; 
+  position: relative;
+  height: 100%;
 }

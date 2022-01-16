@@ -3,10 +3,11 @@ import { Card, Row, Col, Image, Modal, Input} from 'antd'
 import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import axios from '../api'; 
-import ConnectFourModal from '../Components/ConnectFour/ConnectFourModal.js';
-import SixNimmtModal from "../Components/SixNimmt/SixNimmtModal.js"
+import ConnectFourModal from '../Components/ConnectFour/ConnectFourModal';
+import SixNimmtModal from "../Components/SixNimmt/SixNimmtModal"
+import "./GameBoard.css"
 const { Header, Content, Sider } = Layout;
-const { Meta } = Card  
+const { Meta } = Card;
 
 const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     photoURL, setPhotoURL, playConnectFour, players, sendCheckSixNimmtRoom}) =>{
@@ -71,17 +72,17 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
               </Menu>
             </Sider>
             <Layout className="site-layout">
-              <Header className="site-layout-background" style={{ padding: 0 }}>
+              <div className="site-layout-background" style={{ padding: 0 }}>
                 {collapsed 
                 ? <MenuUnfoldOutlined className = 'trigger' onClick = {toggle} style={{ padding: 10 }}/>
                 : <MenuFoldOutlined className = 'trigger' onClick = {toggle} style={{ padding: 10 }}/>
                 }
                 <div className = 'title'> {me}, Welcome To Board Game World! </div>
-              </Header>
+              </div>
               <Content
-                className="site-layout-background"
+                className="site-layout-background1"
                 style={{
-                  margin: '24px 16px',
+                  margin: '30px 30px',
                   padding: 24,
                   minHeight: 400,
                 }}
@@ -91,7 +92,7 @@ const GameBoard = ({me, collapsed, toggle, setIsConnectFour, setIsSixNimmt,
                     <Col span={8}>
                       <Card
                       hoverable
-                      style={{ width: 240 }}
+                      style={{ width: 240 } }
                       cover={<img alt="example" src="https://m.media-amazon.com/images/I/81fEiLrmZ8L._AC_SL1500_.jpg" />}
                       onClick={() => setConnectFourVisible(true)}
                       >

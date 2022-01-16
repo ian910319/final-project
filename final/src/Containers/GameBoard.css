@@ -1,0 +1,21 @@
+.title {
+    font-family: Comic Sans MS;
+    color: rgb(237, 255, 208);
+    font-size: 35px;
+}
+.site-layout-background {
+    position: 'fixed';
+    height: 70px;
+    width: '100%';
+    background: linear-gradient(to right, rgb(243, 164, 74), rgb(252, 168, 12));
+}
+
+.site-layout-background1 {
+    background-color: rgb(253, 245, 231);
+}
+.ant-card-body{
+    background-color: rgb(253, 245, 231);   
+}
+.site-layout{
+    background-color: rgb(253, 221, 166);  
+}
