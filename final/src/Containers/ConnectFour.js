@@ -1,7 +1,7 @@
 import { Layout, Button, Image } from 'antd';
 import { useEffect, useState } from 'react';
-import Board from '../Components/ConnectFour/Board'
-import useBoard from '../Hooks/useBoard';
+import Board from '../Components/ConnectFour/Board.js'
+import useBoard from '../Hooks/useBoard.js';
 
 const { Header, Footer, Content } = Layout;
 const ConnectFour = (props) => {

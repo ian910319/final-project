@@ -1,10 +1,69 @@
 {
   "name": "final",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@babel/cli": "^7.16.0",
+    "@babel/core": "^7.16.5",
+    "@babel/node": "^7.16.5",
+    "@babel/plugin-proposal-class-properties": "^7.16.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.16.5",
+    "@babel/plugin-transform-arrow-functions": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "mini-css-extract-plugin": "2.4.5",
+    "webpack": "^4.44.2"
+  },
+  "overrides": {
+    "mini-css-extract-plugin": "2.4.5"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.12.3",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "antd": "^4.17.4",
+    "apollo-link-ws": "^1.0.20",
+    "apollo-server-express": "^2.25.2",
+    "axios": "^0.24.0",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv-defaults": "^2.0.2",
+    "express": "^4.17.1",
+    "http": "^0.0.1-security",
+    "lodash": "^4.17.21",
+    "mongoose": "^5.12.15",
+    "nodemon": "^2.0.15",
+    "react": "^17.0.1",
+    "react-apollo": "^3.1.5",
+    "react-dom": "^17.0.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
+    "styled-components": "^5.3.3",
+    "web-vitals": "^0.2.4",
+    "ws": "^8.4.0"
+  },
   "scripts": {
-    "start": "cd frontend && yarn start",
-    "server": "cd backend && yarn server"
+    "start": "node server.js",
+    "react_start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

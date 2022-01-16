@@ -3,8 +3,8 @@ import { Card, Row, Col, Image, Modal, Input} from 'antd'
 import { TagOutlined, UserOutlined, TrophyOutlined, MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import axios from '../api'; 
-import ConnectFourModal from '../Components/ConnectFour/ConnectFourModal';
-import SixNimmtModal from "../Components/SixNimmt/SixNimmtModal"
+import ConnectFourModal from '../Components/ConnectFour/ConnectFourModal.js';
+import SixNimmtModal from "../Components/SixNimmt/SixNimmtModal.js"
 const { Header, Content, Sider } = Layout;
 const { Meta } = Card  
 

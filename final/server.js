@@ -1,15 +1,19 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import router from './routes/router'
+import router from './backend/routes/router.js'
 import cors from 'cors' 
 import http from 'http'
-import WebSocket from 'ws'
-import {User, ConnectFour} from './models/connectFour_mongo'
-import {sendData, sendStatus} from './wssConnect'
+import { WebSocketServer } from 'ws'
 import dotenv from "dotenv-defaults"
-import {licensingcard} from "./uitility/sixNimmt_utilities"
-import {checkForWin} from "./uitility/connectFour_utilities"
-import {SixNimmtRoom, PlayerInfo} from "./models/sixNimmt_mongo"
+import path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
+
+import {User, ConnectFour} from './backend/models/connectFour_mongo.js'
+import {sendData, sendStatus} from './backend/wssConnect.js'
+import {licensingcard} from "./backend/uitility/sixNimmt_utilities.js"
+import {checkForWin} from "./backend/uitility/connectFour_utilities.js"
+import {SixNimmtRoom, PlayerInfo} from "./backend/models/sixNimmt_mongo.js"
 
 dotenv.config();
 
@@ -23,21 +27,26 @@ mongoose.connect(process.env.MONGO_URL, {
     } catch (e) { throw new Error("Database deletion failed"); }
   })
 
-const db = mongoose.connection
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const port = process.env.PORT || 5000;
+
 const app = express()
 app.use(express.json())
 app.use(cors())
 app.use('/api', router)
+app.use(express.static(path.join(__dirname, "build")));
+app.get("/*", function (req, res) {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
-const port = process.env.PORT || 5000;
 app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`),
 );
 
-const server = http.createServer();
+const server = http.createServer(app);
 server.listen(4000, () => console.log("Listening.. on 4000"))
 
-const wss = new WebSocket.Server({
+const wss = new WebSocketServer({
   server
 });
 

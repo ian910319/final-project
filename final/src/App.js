@@ -1,12 +1,12 @@
 import "./App.css"
 import { useState, useEffect } from 'react';
 import { message } from "antd";
-import SignIn from "./Containers/SignIn";
-import GameBoard from './Containers/GameBoard'
-import ConnectFour from "./Containers/ConnectFour";
-import SixNimmt from "./Containers/SixNimmt";
-import useConnectFour from "./Hooks/useConnectFour";
-import useSixNimmt from "./Hooks/useSixNimmt";
+import SignIn from "./Containers/SignIn.js";
+import GameBoard from './Containers/GameBoard.js'
+import ConnectFour from "./Containers/ConnectFour.js";
+import SixNimmt from "./Containers/SixNimmt.js";
+import useConnectFour from "./Hooks/useConnectFour.js";
+import useSixNimmt from "./Hooks/useSixNimmt.jss";
 
 function App() {
 
